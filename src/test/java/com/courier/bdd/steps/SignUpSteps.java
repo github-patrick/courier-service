@@ -1,7 +1,5 @@
 package com.courier.bdd.steps;
 
-import com.courier.CourierServiceApplication;
-import com.courier.domain.CourierUser;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
@@ -12,7 +10,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Map;
