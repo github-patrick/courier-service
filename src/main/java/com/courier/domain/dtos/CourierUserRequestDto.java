@@ -3,8 +3,6 @@ package com.courier.domain.dtos;
 import com.courier.domain.enums.UserType;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
