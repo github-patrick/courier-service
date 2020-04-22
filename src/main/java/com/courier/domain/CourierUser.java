@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @ToString
 @Entity
-public class CourierUser {
+public class CourierUser extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -3,6 +3,8 @@ package com.courier.domain.dtos;
 import com.courier.domain.enums.UserType;
 import lombok.*;
 
+import java.util.Date;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
