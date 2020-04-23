@@ -6,10 +6,13 @@ import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.repository.CourierUserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourierUserServiceImpl implements CourierUserService {
@@ -17,14 +20,25 @@ public class CourierUserServiceImpl implements CourierUserService {
     private ModelMapper modelMapper;
     private CourierUserRepository courierUserRepository;
 
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public CourierUserServiceImpl(ModelMapper modelMapper, CourierUserRepository courierUserRepository) {
+    public CourierUserServiceImpl(ModelMapper modelMapper, CourierUserRepository courierUserRepository,
+                                  BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.modelMapper = modelMapper;
         this.courierUserRepository = courierUserRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     public CourierUserResponseDto addCourierUser(CourierUserRequestDto courierUserRequestDto) {
+
+        if (courierUserRequestDto.getPassword().length() < 6) {
+            throw new RuntimeException("password is less than 6 characters");
+        }
+
+        courierUserRequestDto.setPassword(bCryptPasswordEncoder.encode(courierUserRequestDto.getPassword()));
+
         CourierUser courierUserSaved = courierUserRepository.save(modelMapper
                 .map(courierUserRequestDto, CourierUser.class));
         return modelMapper.map(courierUserSaved, CourierUserResponseDto.class);
@@ -37,5 +51,10 @@ public class CourierUserServiceImpl implements CourierUserService {
                 courierUserResponseDtoList.add(modelMapper.map(courierUser,CourierUserResponseDto.class))
         );
         return courierUserResponseDtoList;
+    }
+
+    @Override
+    public CourierUserResponseDto getCourierUserByEmail(String email) {
+        return modelMapper.map(courierUserRepository.findByEmail(email).get(), CourierUserResponseDto.class);
     }
 }

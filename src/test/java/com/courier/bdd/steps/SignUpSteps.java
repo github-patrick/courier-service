@@ -10,6 +10,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,9 @@ public class SignUpSteps {
 
     @Autowired
     private CourierUserRepository courierUserRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @DataTableType
@@ -78,8 +82,16 @@ public class SignUpSteps {
         long count = courierUserResponseDtoList.stream().filter(courierUser ->
                 courierUser.getEmail().equals(this.courierUser.getEmail())).count();
         assertSame(1L, count);
+    }
 
+    @Then("my password should be stored encrypted")
+    public void my_password_should_be_stored_encrypted() {
+    }
 
+    @Then("my {string} should be stored encrypted")
+    public void my_should_be_stored_encrypted(String password) {
+        CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(courierUser.getEmail());
+        assertTrue(bCryptPasswordEncoder.matches(password, courierUserResponseDto.getPassword()));
     }
 
 

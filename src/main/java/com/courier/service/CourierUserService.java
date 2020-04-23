@@ -13,4 +13,6 @@ public interface CourierUserService {
 
     List<CourierUserResponseDto> getAllCourierUsers();
 
+    CourierUserResponseDto getCourierUserByEmail(String email);
+
 }

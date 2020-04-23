@@ -10,9 +10,12 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,14 +30,27 @@ class CourierUserServiceImplTest {
     @Spy
     private ModelMapper modelMapper;
 
+    @Spy
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @InjectMocks
-    private CourierUserServiceImpl courierUserService= new CourierUserServiceImpl(modelMapper, courierUserRepository);
+    private CourierUserServiceImpl courierUserService= new CourierUserServiceImpl(modelMapper, courierUserRepository, bCryptPasswordEncoder);
 
     @Test
     public void getAllUsers() {
         given(courierUserRepository.findAll()).willReturn(Arrays.asList(new CourierUser()));
         List<CourierUserResponseDto> courierUsers = courierUserService.getAllCourierUsers();
         assertThat(courierUsers.size(), equalTo(1));
+    }
+
+    @Test
+    public void getUserByEmail() {
+        final String email = "developer@courier.com";
+        CourierUser courierUser = CourierUser.builder().
+                id(1L).password("password").email(email).build();
+        given(courierUserRepository.findByEmail(email)).willReturn(Optional.of(courierUser));
+        CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(email);
+        assertThat(courierUserResponseDto.getEmail(), equalTo(email));
     }
 
 }
