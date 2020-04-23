@@ -46,4 +46,17 @@ Feature: As a user
       | email              |
       | random@courier.com |
 
+  Scenario Outline: A user's password should be stored encrypted
+    Given I am a customer
+      | email              | password   | type     |
+      | random@courier.com | <password> | Customer |
+    When I sign up
+    Then I should be successfully registered as a customer
+    And my "<password>" should be stored encrypted
+    Examples:
+      | password |
+      | password |
+
+
+
 

@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @ToString
 @Entity
+@Builder
 public class CourierUser extends BaseEntity {
 
     @Id
