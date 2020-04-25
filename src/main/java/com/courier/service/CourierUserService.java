@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface CourierUserService {
 
-    CourierUserResponseDto addCourierUser(CourierUserRequestDto user);
+    CourierUserResponseDto addCourierUser(CourierUserRequestDto courierUserRequestDto);
 
     List<CourierUserResponseDto> getAllCourierUsers();
 

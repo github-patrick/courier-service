@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class CourierUser extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
@@ -27,6 +27,8 @@ public class CourierUser extends BaseEntity {
     @NotBlank
     @Size(min = 6)
     private String password;
+
+    @Enumerated(EnumType.STRING)
     private UserType userType;
 
     public CourierUser(String email, String password, UserType userType) {
