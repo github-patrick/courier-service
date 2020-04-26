@@ -6,10 +6,12 @@ import lombok.*;
 import java.util.Date;
 
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class CourierUserResponseDto {
 
     private Long id;

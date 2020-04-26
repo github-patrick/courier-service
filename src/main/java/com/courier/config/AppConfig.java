@@ -1,5 +1,6 @@
 package com.courier.config;
 
+import com.github.javafaker.Faker;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,5 +17,10 @@ public class AppConfig {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public Faker faker() {
+        return new Faker();
     }
 }

@@ -1,10 +1,11 @@
 package com.courier.bdd.steps;
 
+import com.courier.bdd.Context;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
-import com.courier.repository.CourierUserRepository;
 import com.courier.service.CourierUserServiceImpl;
+import com.courier.utils.UserUtils;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SignUpSteps {
 
+    @Autowired
+    private Context context;
+
     private CourierUserRequestDto courierUser;
 
     @Autowired
     private CourierUserServiceImpl courierUserService;
-
-    @Autowired
-    private CourierUserRepository courierUserRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -46,11 +46,17 @@ public class SignUpSteps {
         courierUser = courierUsers.stream().findFirst().orElseThrow(Exception::new);
     }
 
-    @Given("a user is signed up with the email address of {string}")
-    public void a_user_is_signed_up_with_the_email_address_of(String email) {
+    @Given("I am a registered {string}")
+    public void i_am_a_registered(String type) {
+        context.setCourierUser(courierUserService.addCourierUser(UserUtils.getUser(UserType.valueOf(type.toUpperCase()))));
+    }
+
+    @Given("I have a {string} user signed up with the email address of {string}")
+    public void i_have_a_user_signed_up_with_the_email_address_of(String type, String email) {
         CourierUserRequestDto courierUserRequestDto = CourierUserRequestDto
-                .builder().email(email).password("password").userType(UserType.CUSTOMER).build();
-        courierUserService.addCourierUser(courierUserRequestDto);
+                .builder().email(email).password("password").userType(UserType.valueOf(type.toUpperCase())).build();
+
+        context.setCourierUser(courierUserService.addCourierUser(courierUserRequestDto));
     }
 
 
@@ -58,7 +64,7 @@ public class SignUpSteps {
     @When("I sign up")
     public void i_sign_up() {
         try {
-            courierUserService.addCourierUser(courierUser);
+            context.setCourierUser(courierUserService.addCourierUser(courierUser));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -36,7 +36,7 @@ Feature: As a user
       | pass     |
 
   Scenario Outline: A user's email address should be unique in the system
-    Given a user is signed up with the email address of "<email>"
+    Given I have a "customer" user signed up with the email address of "<email>"
     And I am a customer
       | email   | password | type   |
       | <email> | password | Driver |
