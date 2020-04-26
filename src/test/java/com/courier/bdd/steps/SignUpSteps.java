@@ -36,6 +36,11 @@ public class SignUpSteps {
 
     @DataTableType
     public CourierUserRequestDto userEntry(Map<String,String> users) {
+
+        if (users.get("type") == null) {
+            return new CourierUserRequestDto(users.get("email"), users.get("password"),
+                    null);
+        }
         return new CourierUserRequestDto(users.get("email"), users.get("password"),
                 UserType.valueOf(users.get("type").toUpperCase()));
     }

@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"createdAt","modifiedAt"})
 public class CourierUserResponseDto {
 
     private Long id;

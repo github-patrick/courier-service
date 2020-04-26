@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-@ActiveProfiles("tester")
 @ContextConfiguration(classes = {CourierServiceApplication.class, AppConfig.class, TestConfig.class})
 @Slf4j
 public class Hook {
