@@ -57,7 +57,3 @@ Feature: As a user
     Examples:
       | password |
       | password |
-
-
-
-
