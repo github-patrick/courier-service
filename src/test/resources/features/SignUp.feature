@@ -24,6 +24,7 @@ Feature: As a user
       | email              | password | type     |
       |                    | password | Customer |
       | random@courier.com |          | Driver   |
+      | random@courier.com | password |          |
 
   Scenario Outline: A user's password should be greater than 5 characters
     Given I am a customer
@@ -56,7 +57,3 @@ Feature: As a user
     Examples:
       | password |
       | password |
-
-
-
-

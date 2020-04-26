@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @AllArgsConstructor
@@ -28,6 +29,7 @@ public class CourierUser extends BaseEntity {
     @Size(min = 6)
     private String password;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
