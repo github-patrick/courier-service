@@ -8,8 +8,10 @@ import com.courier.repository.DeliveryDriverRepository;
 import io.cucumber.java.Before;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
+@ActiveProfiles("tester")
 @ContextConfiguration(classes = {CourierServiceApplication.class, AppConfig.class, TestConfig.class})
 @Slf4j
 public class Hook {
