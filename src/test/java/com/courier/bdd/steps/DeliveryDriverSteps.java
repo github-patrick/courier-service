@@ -90,12 +90,6 @@ public class DeliveryDriverSteps {
         assertEquals(0, count);
     }
 
-    @Then("there should be only {int} driver profile for that user with the email address of {string}")
-    public void there_should_be_only_driver_profile_for_that_user_with_the_email_address_of(Integer expectation, String email) {
-        long count = deliverDriverService.getAllDeliveryDrivers().stream()
-                .filter(driver -> driver.getCourierUser().equals(context.getCourierUser())).count();
-    }
-
     @Then("there should be only one driver profile for that user with the email address of {string}")
     public void there_should_be_only_one_driver_profile_for_that_user_with_the_email_address_of(String email) {
         long count = deliverDriverService.getAllDeliveryDrivers().stream()

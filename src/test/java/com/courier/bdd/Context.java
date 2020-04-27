@@ -1,10 +1,7 @@
 package com.courier.bdd;
 
 import com.courier.domain.CourierUser;
-import com.courier.domain.dtos.CourierUserRequestDto;
-import com.courier.domain.dtos.CourierUserResponseDto;
-import com.courier.domain.dtos.DeliveryDriverRequestDto;
-import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.dtos.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +11,5 @@ public class Context {
 
     private CourierUserResponseDto courierUser;
     private DeliveryDriverResponseDto deliveryDriver;
+    private CustomerResponseDto customer;
 }
