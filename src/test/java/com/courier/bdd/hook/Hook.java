@@ -3,6 +3,7 @@ package com.courier.bdd.hook;
 import com.courier.CourierServiceApplication;
 import com.courier.bdd.config.TestConfig;
 import com.courier.config.AppConfig;
+import com.courier.config.SecurityConfig;
 import com.courier.repository.CourierUserRepository;
 import com.courier.repository.CustomerRepository;
 import com.courier.repository.DeliveryDriverRepository;

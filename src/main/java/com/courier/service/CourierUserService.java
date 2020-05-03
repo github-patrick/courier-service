@@ -2,6 +2,7 @@ package com.courier.service;
 
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
+import com.courier.exception.CourierUserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,6 @@ public interface CourierUserService {
 
     List<CourierUserResponseDto> getAllCourierUsers();
 
-    CourierUserResponseDto getCourierUserByEmail(String email);
+    CourierUserResponseDto getCourierUserByEmail(String email) throws CourierUserNotFoundException;
 
 }

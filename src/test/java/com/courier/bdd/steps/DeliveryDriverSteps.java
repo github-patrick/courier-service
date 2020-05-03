@@ -64,9 +64,7 @@ public class DeliveryDriverSteps {
         try {
             context.setDeliveryDriver(deliverDriverService
                     .addDeliveryDriver(deliveryDriverRequestDto, context.getCourierUser()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) {}
     }
 
     @When("I attempt to change my profile status to {string}")
