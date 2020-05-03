@@ -29,7 +29,7 @@ public class CustomerSteps {
 
     @DataTableType
     public CustomerRequestDto customerEntry(Map<String, String> customer) {
-        return new CustomerRequestDto(customer.get("fullName"), null);
+        return new CustomerRequestDto(customer.get("fullName"), null, null);
     }
 
     @Given("I have a customer profile to create")
@@ -48,9 +48,7 @@ public class CustomerSteps {
     public void i_create_the_customer_profile() {
         try {
             context.setCustomer(customerService.addCustomer(customerRequestDto, context.getCourierUser()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) {}
     }
 
     @Then("the customer profile should be created in the system")

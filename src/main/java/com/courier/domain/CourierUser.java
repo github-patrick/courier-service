@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +15,7 @@ import javax.validation.constraints.Size;
 @Setter
 @ToString
 @Entity
-@Builder
+@Builder(builderClassName = "baseBuilder")
 public class CourierUser extends BaseEntity {
 
     @Id
@@ -33,7 +34,10 @@ public class CourierUser extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    public CourierUser(String email, String password, UserType userType) {
+    @Builder(builderMethodName = "superBuilder")
+    public CourierUser(Date createdAt, Date modifiedAt, Long id, String email, String password, UserType userType) {
+        super(createdAt,modifiedAt);
+        this.id = id;
         this.email = email;
         this.password = password;
         this.userType = userType;

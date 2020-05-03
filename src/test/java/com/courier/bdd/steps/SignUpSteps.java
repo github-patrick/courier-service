@@ -4,6 +4,7 @@ import com.courier.bdd.Context;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
+import com.courier.exception.CourierUserNotFoundException;
 import com.courier.service.CourierUserServiceImpl;
 import com.courier.utils.UserUtils;
 import io.cucumber.java.DataTableType;
@@ -70,9 +71,7 @@ public class SignUpSteps {
     public void i_sign_up() {
         try {
             context.setCourierUser(courierUserService.addCourierUser(courierUser));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
     }
 
     @Then("I should be successfully registered as a customer")
@@ -100,7 +99,7 @@ public class SignUpSteps {
     }
 
     @Then("my {string} should be stored encrypted")
-    public void my_should_be_stored_encrypted(String password) {
+    public void my_should_be_stored_encrypted(String password) throws CourierUserNotFoundException {
         CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(courierUser.getEmail());
         assertTrue(bCryptPasswordEncoder.matches(password, courierUserResponseDto.getPassword()));
     }

@@ -3,7 +3,9 @@ package com.courier.service;
 import com.courier.domain.CourierUser;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
+import com.courier.exception.CourierUserNotFoundException;
 import com.courier.repository.CourierUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 public class CourierUserServiceImpl implements CourierUserService {
 
@@ -31,14 +35,13 @@ public class CourierUserServiceImpl implements CourierUserService {
     @Override
     public CourierUserResponseDto addCourierUser(CourierUserRequestDto courierUserRequestDto) {
 
-        if (courierUserRequestDto.getPassword().length() < 6) {
-            throw new RuntimeException("password is less than 6 characters");
-        }
+        log.info("Creating courier user");
 
         courierUserRequestDto.setPassword(bCryptPasswordEncoder.encode(courierUserRequestDto.getPassword()));
-
         CourierUser courierUserSaved = courierUserRepository.save(modelMapper
                 .map(courierUserRequestDto, CourierUser.class));
+
+        log.info("Courier user persisted to the database");
         return modelMapper.map(courierUserSaved, CourierUserResponseDto.class);
     }
 
@@ -52,7 +55,12 @@ public class CourierUserServiceImpl implements CourierUserService {
     }
 
     @Override
-    public CourierUserResponseDto getCourierUserByEmail(String email) {
-        return modelMapper.map(courierUserRepository.findByEmail(email).get(), CourierUserResponseDto.class);
+    public CourierUserResponseDto getCourierUserByEmail(String email) throws CourierUserNotFoundException {
+        Optional<CourierUser> courierUser = courierUserRepository.findByEmail(email);
+        if (!courierUser.isPresent()) {
+            log.info("Unable to retrieve " + email);
+            throw new CourierUserNotFoundException("Courier user not found for " + email);
+        }
+        return modelMapper.map(courierUser.get(), CourierUserResponseDto.class);
     }
 }

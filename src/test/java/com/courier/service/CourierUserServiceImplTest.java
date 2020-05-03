@@ -2,6 +2,8 @@ package com.courier.service;
 
 import com.courier.domain.CourierUser;
 import com.courier.domain.dtos.CourierUserResponseDto;
+import com.courier.domain.enums.UserType;
+import com.courier.exception.CourierUserNotFoundException;
 import com.courier.repository.CourierUserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,10 +47,12 @@ class CourierUserServiceImplTest {
     }
 
     @Test
-    public void getUserByEmail() {
+    public void getUserByEmail() throws CourierUserNotFoundException {
         final String email = "developer@courier.com";
-        CourierUser courierUser = CourierUser.builder().
-                id(1L).password("password").email(email).build();
+
+        CourierUser courierUser = CourierUser.superBuilder().id(34L).userType(UserType.CUSTOMER).password("password")
+                .createdAt(new Date()).modifiedAt(new Date()).email(email).build();
+
         given(courierUserRepository.findByEmail(email)).willReturn(Optional.of(courierUser));
         CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(email);
         assertThat(courierUserResponseDto.getEmail(), equalTo(email));

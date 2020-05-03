@@ -1,4 +1,10 @@
 package com.courier.exception;
 
-public class CourierUserNotFoundException {
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class CourierUserNotFoundException extends Exception {
+    public CourierUserNotFoundException(String message) {
+        super(message);
+    }
 }

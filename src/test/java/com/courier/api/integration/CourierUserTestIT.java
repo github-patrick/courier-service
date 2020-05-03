@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CourierUserIT extends BaseTest {
+public class CourierUserTestIT extends BaseTest {
 
     private RequestSpecBuilder requestSpecBuilder;
 
-    public CourierUserIT() {
+    public CourierUserTestIT() {
         requestSpecBuilder = new RequestSpecBuilder();
     }
 
