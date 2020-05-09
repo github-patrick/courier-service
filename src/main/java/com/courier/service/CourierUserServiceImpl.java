@@ -41,6 +41,7 @@ public class CourierUserServiceImpl implements CourierUserService {
         CourierUser courierUserSaved = courierUserRepository.save(modelMapper
                 .map(courierUserRequestDto, CourierUser.class));
 
+        log.debug("Courier user object persisted to the database {}",courierUserSaved);
         log.info("Courier user persisted to the database");
         return modelMapper.map(courierUserSaved, CourierUserResponseDto.class);
     }

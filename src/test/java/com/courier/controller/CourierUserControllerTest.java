@@ -46,7 +46,9 @@ public class CourierUserControllerTest {
         mockMvc.perform(post(BASE_PATH + "courier-users")
         .accept(MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .content(new ObjectMapper().writeValueAsBytes(courierUserRequestDto)))
+                .characterEncoding("UTF-8")
+                .content(new ObjectMapper().writeValueAsBytes(courierUserRequestDto)))
+                .andDo(print())
         .andExpect(status().isCreated());
     }
 
