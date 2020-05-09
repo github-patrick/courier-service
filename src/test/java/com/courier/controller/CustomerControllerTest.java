@@ -21,10 +21,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 @WebMvcTest(controllers = CustomerController.class)
 @WithMockUser(roles = "CUSTOMER")
@@ -61,16 +64,23 @@ class CustomerControllerTest {
 
     @Test
     public void createCustomerProfileViaXml() throws Exception {
-        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserResponseDto(UserType.CUSTOMER);
         CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
-        customerRequestDto.setEmail(courierUserRequestDto.getEmail());
+        customerRequestDto.setEmail(courierUserResponseDto.getEmail());
+
+
+        when(courierUserService.getCourierUserByEmail(customerRequestDto.getEmail())).thenReturn(courierUserResponseDto);
+        when(customerService.addCustomer(customerRequestDto,courierUserResponseDto))
+                .thenReturn(CustomerUtils.getCustomerResponseDto(courierUserResponseDto));
 
         mockMvc.perform(post("/api/v1/customers")
                 .accept(MediaType.APPLICATION_XML_VALUE)
                 .contentType(MediaType.APPLICATION_XML_VALUE)
                 .characterEncoding("UTF-8")
                 .content(new XmlMapper().writeValueAsBytes(customerRequestDto)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(xpath("/CustomerResponseDto/courierUser/email/text()").exists())
+                .andDo(print());
     }
 
     @Test

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,15 +32,19 @@ public class CourierUser extends BaseEntity {
     private String password;
 
     @NotNull
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    @CollectionTable(
+            name = "courier_user_type",
+            joinColumns = @JoinColumn(name = "id", referencedColumnName = "id" ) )
+    private List<UserType> types;
 
     @Builder(builderMethodName = "superBuilder")
-    public CourierUser(Date createdAt, Date modifiedAt, Long id, String email, String password, UserType userType) {
+    public CourierUser(Date createdAt, Date modifiedAt, Long id, String email, String password, List<UserType> userType) {
         super(createdAt,modifiedAt);
         this.id = id;
         this.email = email;
         this.password = password;
-        this.userType = userType;
+        this.types = userType;
     }
 }

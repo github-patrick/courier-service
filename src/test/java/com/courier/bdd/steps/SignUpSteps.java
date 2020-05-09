@@ -14,6 +14,7 @@ import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class SignUpSteps {
                     null);
         }
         return new CourierUserRequestDto(users.get("email"), users.get("password"),
-                UserType.valueOf(users.get("type").toUpperCase()));
+                Arrays.asList(UserType.valueOf(users.get("type").toUpperCase())));
     }
 
 
@@ -60,7 +61,8 @@ public class SignUpSteps {
     @Given("I have a {string} user signed up with the email address of {string}")
     public void i_have_a_user_signed_up_with_the_email_address_of(String type, String email) {
         CourierUserRequestDto courierUserRequestDto = CourierUserRequestDto
-                .builder().email(email).password("password").userType(UserType.valueOf(type.toUpperCase())).build();
+                .builder().email(email).password("password")
+                .types(Arrays.asList(UserType.valueOf(type.toUpperCase()))).build();
 
         context.setCourierUser(courierUserService.addCourierUser(courierUserRequestDto));
     }

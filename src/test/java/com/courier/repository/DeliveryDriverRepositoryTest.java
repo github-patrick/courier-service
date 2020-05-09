@@ -1,24 +1,22 @@
 package com.courier.repository;
 
-import com.courier.config.AppConfig;
 import com.courier.domain.CourierUser;
 import com.courier.domain.DeliveryDriver;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.domain.enums.UserType;
-import com.courier.utils.UserUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Optional;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @DataJpaTest
-@Sql(scripts = "classpath:sql/data-jpa-startup.sql")
+@EnableJpaAuditing
 class DeliveryDriverRepositoryTest {
 
     @Autowired
@@ -50,10 +48,11 @@ class DeliveryDriverRepositoryTest {
 
     private CourierUser createCourierAndDriver() {
         CourierUser courierUserToPersist = CourierUser.builder().email("matthew.jones@gmail.com")
-                .userType(UserType.DRIVER).password("password").build();
+                .types(Arrays.asList(UserType.DRIVER)).password("password").build();
         CourierUser courierUser = courierUserRepository.save(courierUserToPersist);
 
-        DeliveryDriver deliveryDriverToPersist = DeliveryDriver.builder().fullName("Samantha Jennings").deliveryDriverStatus(DeliveryDriverStatus.UNAVAILABLE)
+        DeliveryDriver deliveryDriverToPersist = DeliveryDriver.builder().fullName("Samantha Jennings")
+                .deliveryDriverStatus(DeliveryDriverStatus.UNAVAILABLE)
                 .courierUser(courierUser).build();
 
         deliveryDriverRepository.save(deliveryDriverToPersist);

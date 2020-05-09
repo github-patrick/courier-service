@@ -7,7 +7,9 @@ import com.courier.exception.ErrorApi;
 import com.courier.utils.UserUtils;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -45,7 +47,7 @@ public class CourierUserTestIT extends BaseTest {
 
     @Test
     public void shouldCreateUserViaXML() {
-        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.DRIVER);
+        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
 
         requestSpecBuilder.setAccept(ContentType.XML)
                 .setContentType(ContentType.XML)

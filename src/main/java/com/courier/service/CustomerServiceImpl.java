@@ -28,15 +28,15 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public CustomerResponseDto addCustomer(CustomerRequestDto customerRequestDto,
-                                           CourierUserResponseDto courierUserResponseDto) throws CannotCreateCustomerProfileException {
+    public CustomerResponseDto addCustomer(CustomerRequestDto customerRequestDto, CourierUserResponseDto courierUserResponseDto)
+            throws CannotCreateCustomerProfileException {
 
 
-        if (courierUserResponseDto.getUserType().equals(UserType.DRIVER)) {
+        if (!courierUserResponseDto.getTypes().contains(UserType.CUSTOMER)) {
             throw new CannotCreateCustomerProfileException();
         }
 
-        checkIfCustomerUserHasRegisteredProfile(courierUserResponseDto);
+        this.checkIfCustomerUserHasRegisteredProfile(courierUserResponseDto);
 
         customerRequestDto.setCourierUser(courierUserResponseDto);
         Customer customer = modelMapper.map(customerRequestDto, Customer.class);
