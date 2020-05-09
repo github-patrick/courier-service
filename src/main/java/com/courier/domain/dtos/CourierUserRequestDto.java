@@ -1,13 +1,19 @@
 package com.courier.domain.dtos;
 
 import com.courier.domain.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.Date;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -16,7 +22,8 @@ import java.util.Date;
 @Setter
 @ToString
 @Builder
-@XmlRootElement
+@XmlRootElement(name = "CourierUserRequestDto")
+@XmlAccessorType(XmlAccessType.FIELD) //to bind all non static, non transient fields.
 public class CourierUserRequestDto {
 
     @NotBlank
@@ -26,6 +33,12 @@ public class CourierUserRequestDto {
     @NotBlank
     @Size(min = 6,message = "Password should be greater than 5 characters")
     private String password;
-    private UserType userType;
+
+
+//    @XmlElementWrapper(name = "types")
+//    @XmlElement(name = "types")
+    @XmlElementWrapper(name = "types")
+    @XmlElement(name = "types")
+    private List<UserType> types;
 
 }

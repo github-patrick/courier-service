@@ -17,12 +17,14 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,11 +51,22 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    public void driverTypeUsersCannotAddCustomerProfiles () {
+    public void driverTypeUsersCannotAddCustomerProfiles() {
         CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
         CourierUserResponseDto courierUserResponseDto = UserUtils.getUserDriverResponseDto();
         assertThrows(CannotCreateCustomerProfileException.class, ()-> customerService.addCustomer(customerRequestDto,courierUserResponseDto));
 
+    }
+
+    @Test
+    public void driverAndCustomerTypeUserCreatesCustomer(){
+
+        given(customerRepository.save(any(Customer.class))).willReturn(new Customer());
+
+        CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserCustomerDriverResponse();
+
+        assertDoesNotThrow(()->customerService.addCustomer(customerRequestDto,courierUserResponseDto));
     }
 
     @Test

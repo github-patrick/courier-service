@@ -1,7 +1,6 @@
 package com.courier.service;
 
 import com.courier.business.DriverStatusResolver;
-import com.courier.business.Resolvable;
 import com.courier.domain.CourierUser;
 import com.courier.domain.DeliveryDriver;
 import com.courier.domain.dtos.CourierUserResponseDto;
@@ -35,7 +34,7 @@ public class DeliveryDriverServiceImpl implements DeliveryDriverService, DriverS
     public DeliveryDriverResponseDto addDeliveryDriver(DeliveryDriverRequestDto deliveryDriverRequestDto,
                                                        CourierUserResponseDto courierUserResponseDto) throws CannotCreateDriverProfileException {
 
-        if (!(courierUserResponseDto.getUserType().equals(UserType.DRIVER))) {
+        if (!courierUserResponseDto.getTypes().contains(UserType.DRIVER)) {
             throw new CannotCreateDriverProfileException();
         }
 

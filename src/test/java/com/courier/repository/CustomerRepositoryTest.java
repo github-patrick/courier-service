@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -32,7 +34,7 @@ public class CustomerRepositoryTest {
 
     private CourierUser createCourierAndCustomer() {
         CourierUser courierUserToPersist = CourierUser.builder().email("matthew.jones@gmail.com")
-                .userType(UserType.CUSTOMER).password("password").build();
+                .types(Arrays.asList(UserType.CUSTOMER)).password("password").build();
         CourierUser courierUser = courierUserRepository.save(courierUserToPersist);
 
         Customer customer = Customer.builder().fullName("Matthew Berkow").courierUser(courierUser).build();
