@@ -64,7 +64,7 @@ public class CourierUserServiceImpl implements CourierUserService {
         Optional<CourierUser> courierUser = courierUserRepository.findByEmail(email);
         if (!courierUser.isPresent()) {
             log.info("Unable to retrieve " + email);
-            throw new CourierUserNotFoundException("Courier user not found for " + email);
+            throw new CourierUserNotFoundException("Courier user account not found for " + email);
         }
         return modelMapper.map(courierUser.get(), CourierUserResponseDto.class);
     }

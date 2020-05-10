@@ -1,18 +1,12 @@
 package com.courier.domain.dtos;
 
 import com.courier.domain.enums.UserType;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
-import java.util.Date;
 import java.util.List;
 
 
@@ -31,10 +25,9 @@ public class CourierUserRequestDto {
     private String email;
 
     @NotBlank
-    @Size(min = 6,message = "Password should be greater than 5 characters")
     private String password;
 
-
+    @NotNull(message = "Courier account type cannot be null.")
     @XmlElementWrapper(name = "types")
     @XmlElement(name = "types")
     private List<UserType> types;

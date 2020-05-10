@@ -107,6 +107,7 @@ public class CustomerTestIT extends BaseTest {
                         when()
                 .post("/customers")
                 .then()
+                .log().all()
                 .extract().as(ErrorApi.class);
 
         assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());

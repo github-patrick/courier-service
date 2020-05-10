@@ -1,18 +1,18 @@
 package com.courier.controller;
 
 import com.courier.domain.dtos.CourierUserRequestDto;
-import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
 import com.courier.security.CourierUserDetailsService;
 import com.courier.service.CourierUserService;
 import com.courier.utils.UserUtils;
+import com.courier.validators.CourierUserValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +32,9 @@ public class CourierUserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @SpyBean
+    private CourierUserValidator courierUserValidator;
+
     @MockBean
     private CourierUserService courierUserService;
 
@@ -40,7 +43,6 @@ public class CourierUserControllerTest {
 
     @Test
     public void shouldCreateCourierUser() throws Exception {
-
         CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
 
         mockMvc.perform(post(BASE_PATH + "courier-users")
@@ -116,7 +118,24 @@ public class CourierUserControllerTest {
         final String entity = "{\n" +
                 "    \"email\": \"jerry@courier.com\",\n" +
                 "    \"password\": \"password\",\n" +
-                "    \"types\": \"[\"CUSTOMER\"]\"\n" +
+                "    \"types\": [\"DR\"]\n" +
+                "}";
+
+        mockMvc.perform(post(BASE_PATH + "courier-users")
+                .accept(MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+                .content(entity))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotCreateUserWithInvalidTypeWithSpaces() throws Exception {
+        final String entity = "{\n" +
+                "    \"email\": \"jerry@courier.com\",\n" +
+                "    \"password\": \"password\",\n" +
+                "    \"types\": [\"DRIVER \"]\n" +
                 "}";
 
         mockMvc.perform(post(BASE_PATH + "courier-users")
