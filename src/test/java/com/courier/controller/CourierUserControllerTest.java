@@ -127,5 +127,4 @@ public class CourierUserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
-
 }

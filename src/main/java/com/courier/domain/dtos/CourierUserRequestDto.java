@@ -35,8 +35,6 @@ public class CourierUserRequestDto {
     private String password;
 
 
-//    @XmlElementWrapper(name = "types")
-//    @XmlElement(name = "types")
     @XmlElementWrapper(name = "types")
     @XmlElement(name = "types")
     private List<UserType> types;

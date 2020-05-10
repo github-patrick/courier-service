@@ -83,10 +83,32 @@ public class CustomerTestIT extends BaseTest {
                 .post("customers")
                 .then()
                 .log().all()
-                .statusCode(404);
+                .statusCode(400);
 
         ErrorApi errorApi = response.extract().as(ErrorApi.class);
 
-        assertEquals(HttpStatus.BAD_REQUEST, errorApi.getCode());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());
+    }
+
+    @Test
+    public void shouldNotDuplicateCustomerProfiles() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
+
+        CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
+        customerRequestDto.setEmail(customerResponseDto.getCourierUser().getEmail());
+
+        ErrorApi errorApi = given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
+                .body(customerRequestDto)
+                .log().all().
+                        when()
+                .post("/customers")
+                .then()
+                .extract().as(ErrorApi.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());
     }
 }

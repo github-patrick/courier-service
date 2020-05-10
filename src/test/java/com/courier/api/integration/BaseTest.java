@@ -13,7 +13,7 @@ public class BaseTest {
 
     public BaseTest() {
         RestAssured.baseURI = BASE_URI;
-        RestAssured.port = 8888;
+        RestAssured.port = 8444;
         RestAssured.basePath = BASE_PATH;
     }
 }

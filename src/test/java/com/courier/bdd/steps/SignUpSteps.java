@@ -54,12 +54,12 @@ public class SignUpSteps {
     }
 
     @Given("I am a registered {string}")
-    public void i_am_a_registered(String type) {
+    public void i_am_a_registered(String type) throws Exception {
         context.setCourierUser(courierUserService.addCourierUser(UserUtils.getUser(UserType.valueOf(type.toUpperCase()))));
     }
 
     @Given("I have a {string} user signed up with the email address of {string}")
-    public void i_have_a_user_signed_up_with_the_email_address_of(String type, String email) {
+    public void i_have_a_user_signed_up_with_the_email_address_of(String type, String email) throws Exception {
         CourierUserRequestDto courierUserRequestDto = CourierUserRequestDto
                 .builder().email(email).password("password")
                 .types(Arrays.asList(UserType.valueOf(type.toUpperCase()))).build();

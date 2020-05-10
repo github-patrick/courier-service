@@ -1,12 +1,17 @@
 package com.courier.service;
 
 import com.courier.domain.CourierUser;
+import com.courier.domain.Customer;
+import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
+import com.courier.exception.CannotRegisterUserException;
 import com.courier.exception.CourierUserNotFoundException;
 import com.courier.repository.CourierUserRepository;
+import com.courier.utils.UserUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -20,9 +25,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CourierUserServiceImplTest {
@@ -38,6 +47,21 @@ class CourierUserServiceImplTest {
 
     @InjectMocks
     private CourierUserServiceImpl courierUserService= new CourierUserServiceImpl(modelMapper, courierUserRepository, bCryptPasswordEncoder);
+
+    @Test
+    public void shouldCreateUser() throws Exception {
+        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
+        given(courierUserRepository.save(ArgumentMatchers.any(CourierUser.class))).willReturn(new CourierUser());
+        assertNotNull(courierUserService.addCourierUser(courierUserRequestDto));
+    }
+
+    @Test
+    public void shouldNotCreateDuplicateUsers() {
+        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
+        when(courierUserRepository.findByEmail(courierUserRequestDto.getEmail())).thenReturn(Optional.of(new CourierUser()));
+        assertThrows(CannotRegisterUserException.class, ()->courierUserService.addCourierUser(courierUserRequestDto));
+    }
+
 
     @Test
     public void getAllUsers() {

@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
     private ModelMapper modelMapper;
@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService{
         log.info("Creating customer profile for user: {}", courierUserResponseDto);
 
         if (!courierUserResponseDto.getTypes().contains(UserType.CUSTOMER)) {
-            throw new CannotCreateCustomerProfileException();
+            throw new CannotCreateCustomerProfileException("User is not a customer. Register as a customer and retry.");
         }
 
         this.checkIfCustomerUserHasRegisteredProfile(courierUserResponseDto);
@@ -61,6 +61,7 @@ public class CustomerServiceImpl implements CustomerService{
             throws CannotCreateCustomerProfileException {
         log.info("Checking to see if the user has an existing customer profile.");
         if (customerRepository.findByCourierUser(modelMapper.map(courierUserResponseDto, CourierUser.class)).isPresent()) {
+            log.debug("User {} already has a customer profile", courierUserResponseDto.getEmail());
             throw new CannotCreateCustomerProfileException("The user "+ courierUserResponseDto.getEmail() +" already has a customer profile");
         }
     }

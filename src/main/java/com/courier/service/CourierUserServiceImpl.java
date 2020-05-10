@@ -3,6 +3,7 @@ package com.courier.service;
 import com.courier.domain.CourierUser;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
+import com.courier.exception.CannotRegisterUserException;
 import com.courier.exception.CourierUserNotFoundException;
 import com.courier.repository.CourierUserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +34,11 @@ public class CourierUserServiceImpl implements CourierUserService {
     }
 
     @Override
-    public CourierUserResponseDto addCourierUser(CourierUserRequestDto courierUserRequestDto) {
+    public CourierUserResponseDto addCourierUser(CourierUserRequestDto courierUserRequestDto) throws CannotRegisterUserException {
 
         log.info("Creating courier user");
+
+        this.checkIfUserHasRegistered(courierUserRequestDto);
 
         courierUserRequestDto.setPassword(bCryptPasswordEncoder.encode(courierUserRequestDto.getPassword()));
         CourierUser courierUserSaved = courierUserRepository.save(modelMapper
@@ -45,6 +48,7 @@ public class CourierUserServiceImpl implements CourierUserService {
         log.info("Courier user persisted to the database");
         return modelMapper.map(courierUserSaved, CourierUserResponseDto.class);
     }
+
 
     @Override
     public List<CourierUserResponseDto> getAllCourierUsers() {
@@ -63,5 +67,12 @@ public class CourierUserServiceImpl implements CourierUserService {
             throw new CourierUserNotFoundException("Courier user not found for " + email);
         }
         return modelMapper.map(courierUser.get(), CourierUserResponseDto.class);
+    }
+
+    private void checkIfUserHasRegistered(CourierUserRequestDto courierUserRequestDto) throws CannotRegisterUserException {
+        log.info("Checking to see if the user has registered.");
+        if (courierUserRepository.findByEmail(courierUserRequestDto.getEmail()).isPresent()) {
+            throw new CannotRegisterUserException("User has already registered");
+        }
     }
 }

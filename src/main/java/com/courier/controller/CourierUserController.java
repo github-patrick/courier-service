@@ -2,6 +2,7 @@ package com.courier.controller;
 
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
+import com.courier.exception.CannotRegisterUserException;
 import com.courier.service.CourierUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,9 @@ public class CourierUserController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<CourierUserResponseDto> createCourierUser(@RequestBody @Valid CourierUserRequestDto courierUserRequestDto) {
+    public ResponseEntity<CourierUserResponseDto> createCourierUser(@RequestBody @Valid CourierUserRequestDto courierUserRequestDto) throws CannotRegisterUserException {
         log.debug("Incoming courier user request body {}",courierUserRequestDto);
+
         return new ResponseEntity(courierUserService.addCourierUser(courierUserRequestDto), HttpStatus.CREATED);
     }
 

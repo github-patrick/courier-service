@@ -7,9 +7,7 @@ import com.courier.exception.ErrorApi;
 import com.courier.utils.UserUtils;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -43,6 +41,29 @@ public class CourierUserTestIT extends BaseTest {
 
         CourierUserResponseDto courierUserResponseDto = response.as(CourierUserResponseDto.class);
         assertEquals(courierUserRequestDto.getEmail(), courierUserResponseDto.getEmail());
+    }
+
+    @Test
+    public void shouldNotCreateDuplicate() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
+        courierUserRequestDto.setEmail(courierUserResponseDto.getEmail());
+
+        requestSpecBuilder.setAccept(ContentType.JSON)
+                .setContentType(ContentType.JSON)
+                .setBody(courierUserRequestDto);
+
+        Response response = given()
+                .spec(requestSpecBuilder.build())
+                .log().all()
+                .when()
+                .post("courier-users")
+                .then()
+                .log().all()
+                .statusCode(400).extract().response();
+
+        ErrorApi errorApi = response.as(ErrorApi.class);
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());
     }
 
     @Test
@@ -85,6 +106,6 @@ public class CourierUserTestIT extends BaseTest {
                 .extract().response();
 
         ErrorApi errorApi = response.as(ErrorApi.class);
-        assertEquals(HttpStatus.BAD_REQUEST, errorApi.getCode());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());
     }
 }
