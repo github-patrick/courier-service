@@ -1,9 +1,6 @@
 package com.courier.controller;
 
-import com.courier.exception.CannotCreateCustomerProfileException;
-import com.courier.exception.CannotRegisterUserException;
-import com.courier.exception.CourierUserNotFoundException;
-import com.courier.exception.ErrorApi;
+import com.courier.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +56,15 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
 
     @ExceptionHandler(CannotCreateCustomerProfileException.class)
     protected ResponseEntity<Object> handleCannotCreateCustomerProfileException(CannotCreateCustomerProfileException ex,
+                                                                                WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.BAD_REQUEST.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity(errorApi, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(CannotCreateDriverProfileException.class)
+    protected ResponseEntity<Object> handleCannotCreateDriverProfileException(CannotCreateDriverProfileException ex,
                                                                                 WebRequest request) {
         ErrorApi errorApi = new ErrorApi(HttpStatus.BAD_REQUEST.getReasonPhrase(),ex.getMessage(), null,
                 HttpStatus.BAD_REQUEST.value());

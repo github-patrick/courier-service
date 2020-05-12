@@ -28,8 +28,8 @@ public class UserUtils {
                 .password(TEST_DEFAULT_PASSWORD).types(Arrays.asList(userType)).build();
     }
 
-    public static CourierUserResponseDto getUserCustomerDriverResponse() {
-        return CourierUserResponseDto.builder().id(1l).email("random@courier.com")
+    public static CourierUserResponseDto getUserCustomerDriverResponseDto() {
+        return CourierUserResponseDto.builder().id(1l).email(faker.internet().emailAddress())
                 .password(TEST_DEFAULT_PASSWORD)
                 .createdAt(new Date()).modifiedAt(new Date())
                 .types(Arrays.asList(UserType.CUSTOMER, UserType.DRIVER)).build();
@@ -42,7 +42,7 @@ public class UserUtils {
     }
 
     public static CourierUserResponseDto getUserDriverResponseDto() {
-        return CourierUserResponseDto.builder().id(1l).email("random@courier.com")
+        return CourierUserResponseDto.builder().id(1l).email(faker.internet().emailAddress())
                 .createdAt(new Date()).modifiedAt(new Date())
                 .password(TEST_DEFAULT_PASSWORD).types(Arrays.asList(UserType.DRIVER)).build();
     }

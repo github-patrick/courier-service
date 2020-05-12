@@ -1,8 +1,11 @@
 package com.courier.domain.dtos;
 
-import com.courier.domain.CourierUser;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import lombok.*;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -11,6 +14,9 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode
+@Builder
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DeliveryDriverResponseDto {
 
     private Long id;

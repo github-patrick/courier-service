@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ActiveProfiles("dev")
+@ActiveProfiles("dev") //dev profile uses a real database (non in memory of the JVM) to persist data.
 public class BaseTest {
 
     protected static final String BASE_URI = "http://localhost";

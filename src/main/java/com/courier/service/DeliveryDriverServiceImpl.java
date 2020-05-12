@@ -35,7 +35,7 @@ public class DeliveryDriverServiceImpl implements DeliveryDriverService, DriverS
                                                        CourierUserResponseDto courierUserResponseDto) throws CannotCreateDriverProfileException {
 
         if (!courierUserResponseDto.getTypes().contains(UserType.DRIVER)) {
-            throw new CannotCreateDriverProfileException();
+            throw new CannotCreateDriverProfileException("User is not a driver. Register as a driver and retry.");
         }
 
         if (!(DeliveryDriverStatus.UNAVAILABLE).equals(deliveryDriverRequestDto.getDeliveryDriverStatus())) {

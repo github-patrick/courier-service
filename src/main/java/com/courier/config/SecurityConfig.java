@@ -26,9 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/courier-users").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/v1/customers")
-                    .hasRole("CUSTOMER").and().httpBasic()
-                .and()
-                .authorizeRequests()
+                    .hasRole("CUSTOMER")
+                .antMatchers("/api/v1/drivers")
+                    .hasRole("DRIVER")
                 .antMatchers("/api/v1/**").authenticated().and().httpBasic();
 
         http.csrf().disable();

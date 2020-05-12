@@ -22,6 +22,7 @@ public class DeliveryDriver extends BaseEntity {
     @NotBlank
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
     private DeliveryDriverStatus deliveryDriverStatus;
 
     @OneToOne

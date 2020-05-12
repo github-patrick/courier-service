@@ -37,11 +37,10 @@ public class DeliveryDriverSteps {
     @DataTableType
     public DeliveryDriverRequestDto driverEntry(Map<String,String> drivers) {
         if (drivers.get("status")==null) {
-            return new DeliveryDriverRequestDto(drivers.get("fullName"), null,
-                    null);
+            return new DeliveryDriverRequestDto(drivers.get("fullName"), null);
         }
-        return new DeliveryDriverRequestDto(drivers.get("fullName"), DeliveryDriverStatus.valueOf(drivers.get("status")),
-                null);
+        return DeliveryDriverRequestDto.subBuilder().fullName(drivers.get("fullName"))
+                .deliveryDriverStatus(DeliveryDriverStatus.valueOf(drivers.get("status"))).build();
     }
 
 

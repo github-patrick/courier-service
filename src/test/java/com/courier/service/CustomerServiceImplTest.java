@@ -17,7 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +63,7 @@ class CustomerServiceImplTest {
         given(customerRepository.save(any(Customer.class))).willReturn(new Customer());
 
         CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
-        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserCustomerDriverResponse();
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserCustomerDriverResponseDto();
 
         assertDoesNotThrow(()->customerService.addCustomer(customerRequestDto,courierUserResponseDto));
     }
