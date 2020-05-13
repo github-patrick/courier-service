@@ -26,8 +26,8 @@ public class CourierUserValidator implements Validator {
         }
         if (!(courierUserRequestDto.getTypes() == null)) {
             courierUserRequestDto.getTypes().forEach(userType -> {
-                if (!Arrays.asList(UserType.CUSTOMER, UserType.DRIVER).contains(userType)) {
-                    errors.rejectValue("types", "A type can only be of CUSTOMER or DRIVER.");
+                if (!Arrays.asList(UserType.CUSTOMER, UserType.DRIVER, UserType.ADMIN).contains(userType)) {
+                    errors.rejectValue("types", "A type can only be of ADMIN, CUSTOMER or DRIVER.");
                 }
             });
         }

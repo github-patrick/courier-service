@@ -52,6 +52,14 @@ public class DeliveryDriverServiceImpl implements DeliveryDriverService, DriverS
     }
 
     @Override
+    public List<DeliveryDriverResponseDto> getAllDeliveryDrivers(DeliveryDriverStatus status) {
+        List<DeliveryDriverResponseDto> deliveryDriverResponseDtoList = new ArrayList();
+        deliveryDriverRepository.findByDeliveryDriverStatus(status).forEach(deliveryDriver ->
+                deliveryDriverResponseDtoList.add(modelMapper.map(deliveryDriver,DeliveryDriverResponseDto.class)));
+        return deliveryDriverResponseDtoList;
+    }
+
+    @Override
     public List<DeliveryDriverResponseDto> getAllDeliveryDrivers() {
         List<DeliveryDriverResponseDto> deliveryDriverResponseDtoList = new ArrayList();
         deliveryDriverRepository.findAll().forEach(deliveryDriver ->

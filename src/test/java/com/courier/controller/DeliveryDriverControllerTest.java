@@ -2,6 +2,8 @@ package com.courier.controller;
 
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
+import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.exception.CannotCreateDriverProfileException;
 import com.courier.exception.CourierUserNotFoundException;
 import com.courier.security.CourierUserDetailsService;
@@ -22,9 +24,13 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.rmi.CORBA.Util;
+import java.util.Arrays;
+
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -87,7 +93,6 @@ public class DeliveryDriverControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(xpath("/DeliveryDriverResponseDto/courierUser/email/text()").exists());
-
     }
 
     @Test
@@ -178,7 +183,7 @@ public class DeliveryDriverControllerTest {
     }
 
     @Test
-    public void createDeliveryDriverProfileInvalidEmail() throws Exception{
+    public void createDeliveryDriverProfileInvalidEmail() throws Exception {
 
         DeliveryDriverRequestDto deliveryDriverRequestDto = DeliveryDriverUtils.getDeliveryDriverRequestDto();
         deliveryDriverRequestDto.setEmail("invalid-email@");
@@ -191,5 +196,58 @@ public class DeliveryDriverControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code", is("Bad Request")));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void listAllDeliveryDrivers() throws Exception {
+
+        when(deliveryDriverService.getAllDeliveryDrivers())
+                .thenReturn(Arrays.asList(DeliveryDriverUtils.getDeliveryDriverResponseDto(UserUtils.getUserDriverResponseDto()),
+                        DeliveryDriverUtils.getDeliveryDriverResponseDto(UserUtils.getUserDriverResponseDto())));
+        deliveryDriverService.getAllDeliveryDrivers();
+
+        mockMvc.perform(get("/api/v1/drivers")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)));
+    }
+
+    @Test
+    @WithMockUser(roles = "CUSTOMER")
+    public void listAllDeliveryDriversInvalidRole() throws Exception {
+
+        when(deliveryDriverService.getAllDeliveryDrivers())
+                .thenReturn(Arrays.asList(DeliveryDriverUtils.getDeliveryDriverResponseDto(UserUtils.getUserDriverResponseDto()),
+                        DeliveryDriverUtils.getDeliveryDriverResponseDto(UserUtils.getUserDriverResponseDto())));
+        deliveryDriverService.getAllDeliveryDrivers();
+
+        mockMvc.perform(get("/api/v1/drivers")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void listAllDeliveryDriversFilteredByStatus() throws Exception {
+        when(deliveryDriverService.getAllDeliveryDrivers(DeliveryDriverStatus.UNAVAILABLE))
+                .thenReturn(Arrays.asList(DeliveryDriverUtils.getDeliveryDriverResponseDto(UserUtils.getUserDriverResponseDto()),
+                        DeliveryDriverUtils.getDeliveryDriverResponseDto(UserUtils.getUserDriverResponseDto())));
+        deliveryDriverService.getAllDeliveryDrivers();
+
+        mockMvc.perform(get("/api/v1/drivers")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("status", DeliveryDriverStatus.UNAVAILABLE.toString())
+                .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)));
     }
 }

@@ -33,10 +33,7 @@ public class DeliveryDriverUtils {
     }
 
     public static DeliveryDriverResponseDto createDeliveryDriver(CourierUserResponseDto courierUserResponseDto) {
-
         DeliveryDriverRequestDto deliveryDriverRequestDto = getDeliveryDriverRequestDto(courierUserResponseDto.getEmail());
-
-
         return given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)

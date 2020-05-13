@@ -1,6 +1,7 @@
 package com.courier.domain.dtos;
 
 import com.courier.domain.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
@@ -23,6 +24,8 @@ public class CourierUserResponseDto {
 
     private Long id;
     private String email;
+
+    @JsonIgnore
     private String password;
 
     @XmlElementWrapper(name = "types")

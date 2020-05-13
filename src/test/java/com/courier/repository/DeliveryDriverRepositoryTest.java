@@ -10,7 +10,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +29,7 @@ class DeliveryDriverRepositoryTest {
 
     @Test
     public void findDeliveryDriverByCourierUser() {
-        CourierUser courierUser = createCourierAndDriver();
+        CourierUser courierUser = this.createCourierAndDriver();
 
         DeliveryDriver deliveryDriver = deliveryDriverRepository.
                 findByCourierUser(courierUserRepository.findByEmail(courierUser.getEmail()).get()).get();
@@ -37,12 +39,24 @@ class DeliveryDriverRepositoryTest {
 
     @Test
     public void timeStampsShouldBeSet() {
-        CourierUser courierUser = createCourierAndDriver();
+        CourierUser courierUser = this.createCourierAndDriver();
         DeliveryDriver deliveryDriver = deliveryDriverRepository.
                 findByCourierUser(courierUserRepository.findByEmail(courierUser.getEmail()).get()).get();
 
         assertNotNull(deliveryDriver.getCreatedAt());
         assertNotNull(deliveryDriver.getModifiedAt());
+    }
+
+    @Test
+    public void shouldFilterDriversByStatus() {
+        this.createCourierAndDriver();
+        Iterable<DeliveryDriver> allByDeliveryDriverStatus =
+                deliveryDriverRepository.findAllByDeliveryDriverStatus(DeliveryDriverStatus.UNAVAILABLE);
+
+        List<DeliveryDriver> deliveryDriverList = new ArrayList();
+        allByDeliveryDriverStatus.forEach(deliveryDriver -> deliveryDriverList.add(deliveryDriver));
+
+        assertEquals(1, deliveryDriverList.size());
     }
 
 
