@@ -3,7 +3,8 @@ image_resource:
   type: docker-image
   source: {repository: dockerdozens/maven-dind-alpine}
 
-inputs: git-courier-resource
-
+inputs:
+  - name: git-courier-resource
+    
 run:
   path: git-courier-resource/ci/scripts/build.sh
