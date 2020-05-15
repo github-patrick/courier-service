@@ -3,7 +3,7 @@ resources:
     type: git
     source:
       uri: https://github.com/github-patrick/courier-service
-      branch: docker
+      branch: dockerfile
 
 
 jobs:
@@ -21,9 +21,19 @@ jobs:
           run:
             path: ls
             args: [-laR]
-   - name: test-job
-     public: true
-     plan:
-       - get: git-courier-resource
-         task: build and test
-         file: git-courier-resource/ci/tasks/build-test.yml
+  - name: build-test
+    public: true
+    plan:
+      - get: git-courier-resource
+        passed: [courier-service-job]
+        trigger: true
+      - task: build and test
+#        file: git-courier-resource/ci/tasks/build-test.yml
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: dockerdozens/maven-dind-alpine}
+          run:
+            path: mvn
+            args: [clean]
