@@ -1,0 +1,8 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source: {repository: ibmjava:8-sdk-alpine}
+
+run:
+  path: mvn
+  args: ["clean"]
