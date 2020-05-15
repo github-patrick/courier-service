@@ -21,6 +21,7 @@
 		<rest.assured.version>3.3.0</rest.assured.version>
 		<javafaker.version>1.0.2</javafaker.version>
 		<fasterxml.version>2.10.3</fasterxml.version>
+		<jacoco.version>0.8.5</jacoco.version>
 	</properties>
 
 	<dependencies>
@@ -125,6 +126,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>${fasterxml.version}</version>
@@ -137,12 +143,32 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>pre-unit-tests</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>integration-test</id>
+			<id>integration-tests</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -157,6 +183,42 @@
 									<goal>integration-test</goal>
 									<goal>verify</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.22.2</version>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+						<executions>
+							<execution>
+								<id>pre-integration</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<destFile>${project.build.directory}/site/jacoco/integration/jacoco-it.exec</destFile>
+								</configuration>
+							</execution>
+							<execution>
+								<id>post-integration</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<configuration>
+									<dataFile>${project.build.directory}/site/jacoco/integration/jacoco-it.exec</dataFile>
+									<outputDirectory>${project.reporting.outputDirectory}/jacoco/jacoco-it</outputDirectory>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
