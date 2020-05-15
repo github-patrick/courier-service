@@ -1,7 +1,9 @@
 platform: linux
 image_resource:
   type: docker-image
-  source: {repository: ibmjava:8-sdk-alpine}
+  source: {repository: dockerdozens/maven-dind-alpine}
+
+#inputs: git-courier-resource
 
 run:
   path: mvn
