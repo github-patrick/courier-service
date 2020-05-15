@@ -1,0 +1,29 @@
+resources:
+  - name: git-courier-resource
+    type: git
+    source:
+      uri: https://github.com/github-patrick/courier-service
+      branch: development
+
+
+jobs:
+  - name: courier-service-job
+    public: true
+    plan:
+      - get: git-courier-resource
+        trigger: true
+      - task: hello-world
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: busybox}
+          run:
+            path: ls
+            args: [-laR]
+   - name: test-job
+     public: true
+     plan:
+       - get: git-courier-resource
+         task: build and test
+         file: git-courier-resource/ci/tasks/build-test.yml
