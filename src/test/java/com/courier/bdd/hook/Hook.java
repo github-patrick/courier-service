@@ -10,10 +10,18 @@ import com.courier.repository.DeliveryDriverRepository;
 import io.cucumber.java.Before;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 @ContextConfiguration(classes = {CourierServiceApplication.class, AppConfig.class, TestConfig.class})
+@TestPropertySource("classpath:application-test.properties")
 @Slf4j
+//@SpringBootTest(classes = {CourierServiceApplication.class, AppConfig.class, TestConfig.class})
+//@ActiveProfiles("dev")
 public class Hook {
 
     @Autowired
@@ -24,6 +32,7 @@ public class Hook {
 
     @Autowired
     private CustomerRepository customerRepository;
+
 
     @Before
     public void setUp() {
