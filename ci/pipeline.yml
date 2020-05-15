@@ -3,7 +3,7 @@ resources:
     type: git
     source:
       uri: https://github.com/github-patrick/courier-service
-      branch: development
+      branch: docker
 
 
 jobs:
