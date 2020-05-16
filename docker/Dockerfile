@@ -1,7 +1,5 @@
-FROM zenika/alpine-maven:3-jdk8
+FROM openjdk:8-jdk
 RUN mkdir courier-app
 WORKDIR courier-app
-COPY ../pom.xml /courier-app
-RUN mvn clean package -DskipTests=true
-ENTRYPOINT ["java"]
-CMD ["-jar", "courier_service-0.0.1-SNAPSHOT.jar"]
+COPY courier-service-0.0.1-SNAPSHOT.jar /courier-app
+CMD java -jar courier-service-0.0.1-SNAPSHOT.jar

@@ -1,0 +1,22 @@
+version: '2.1'
+services:
+  web:
+    container_name: courier_service_web
+    depends_on:
+      - db
+#        condition: service_healthy
+    build: ./docker
+    ports:
+      - "8181:8080"
+  db:
+    container_name: db
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: courier_production
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+#    healthcheck:
+#      test: ["CMD", "ready for connections."]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10

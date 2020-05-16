@@ -29,3 +29,11 @@ jobs:
         trigger: true
       - task: build
         file: git-courier-resource/ci/tasks/build.yml
+  - name: integration-tests
+    public: true
+    plan:
+      - get: git-courier-resource
+        passed: [build]
+        trigger: true
+      - task: integration
+        file: git-courier-resource/ci/tasks/integration-tests.yml
