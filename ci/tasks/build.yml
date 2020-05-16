@@ -7,6 +7,5 @@ image_resource:
 
 inputs:
   - name: git-courier-resource
-
 run:
   path: git-courier-resource/ci/scripts/build.sh
