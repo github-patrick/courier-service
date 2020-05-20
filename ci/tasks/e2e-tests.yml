@@ -8,8 +8,5 @@ image_resource:
 inputs:
   - name: git-courier-resource
 
-caches:
-  - path: git-courier-resource/.m2
-
 run:
-  path: git-courier-resource/ci/scripts/build.sh
+  path: git-courier-resource/ci/scripts/e2e_tests.sh
