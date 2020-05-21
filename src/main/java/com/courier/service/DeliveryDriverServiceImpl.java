@@ -74,14 +74,14 @@ public class DeliveryDriverServiceImpl implements DeliveryDriverService, DriverS
         }
     }
 
-    public DeliveryDriverResponseDto findDriverById(Long id) throws DeliveryDriverNotFoundException {
+    public DeliveryDriverResponseDto getDeliveryDriver(Long id) throws DeliveryDriverNotFoundException {
         return modelMapper.map(
                 deliveryDriverRepository.findById(id).orElseThrow(DeliveryDriverNotFoundException::new), DeliveryDriverResponseDto.class);
     }
 
     @Override
     public void updateStatus(DeliveryDriverRequestDto deliveryDriverRequestDto, Long driverId) throws DeliveryDriverNotFoundException {
-        DeliveryDriverResponseDto driverResponseDto = findDriverById(driverId);
+        DeliveryDriverResponseDto driverResponseDto = getDeliveryDriver(driverId);
 
         driverResponseDto.setDeliveryDriverStatus(deliveryDriverRequestDto.getDeliveryDriverStatus());
         deliveryDriverRepository.save(modelMapper.map(driverResponseDto, DeliveryDriver.class));

@@ -70,4 +70,11 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
                 HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity(errorApi, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DeliveryDriverNotFoundException.class)
+    public ResponseEntity<Object> handleDeliveryDriverNotFoundException(DeliveryDriverNotFoundException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.NOT_FOUND.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity(errorApi, HttpStatus.NOT_FOUND);
+    }
 }

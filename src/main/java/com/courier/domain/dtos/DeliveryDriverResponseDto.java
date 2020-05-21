@@ -1,6 +1,7 @@
 package com.courier.domain.dtos;
 
 import com.courier.domain.enums.DeliveryDriverStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,6 +23,8 @@ public class DeliveryDriverResponseDto {
     private Long id;
     private String fullName;
     private DeliveryDriverStatus deliveryDriverStatus;
+
+    @JsonIgnore
     private CourierUserResponseDto courierUser;
     private Date createdAt;
     private Date modifiedAt;
