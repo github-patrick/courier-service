@@ -7,4 +7,5 @@ target/
 .mvn
 mvnw.cmd
 mvnw
+docker/*.jar
 

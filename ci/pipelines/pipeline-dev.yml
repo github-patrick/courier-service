@@ -1,0 +1,33 @@
+resources:
+  - name: git-courier-resource
+    type: git
+    source:
+      uri: https://github.com/github-patrick/courier-service
+      branch: dockerfile
+
+
+jobs:
+  - name: build
+    public: true
+    plan:
+      - get: git-courier-resource
+        trigger: true
+      - task: build
+        file: git-courier-resource/ci/tasks/build.yml
+  - name: integration-tests
+    public: true
+    plan:
+      - get: git-courier-resource
+        passed: [build]
+        trigger: true
+      - task: integration
+        file: git-courier-resource/ci/tasks/integration-tests.yml
+
+  - name: e2e-tests
+    public: true
+    plan:
+      - get: git-courier-resource
+        passed: [integration-tests]
+        trigger: true
+      - task: e2e-tests
+        file: git-courier-resource/ci/tasks/e2e-tests.yml
