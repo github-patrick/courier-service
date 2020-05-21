@@ -116,4 +116,23 @@ public class DeliveryDriverTestIT extends BaseTest {
 
         assertEquals(2, Arrays.asList(drivers).size());
     }
+
+    @Test
+    public void shouldRetrieveDriver() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.DRIVER);
+        DeliveryDriverResponseDto driverResponseDto = DeliveryDriverUtils.createDeliveryDriver(courierUserResponseDto);
+
+        DeliveryDriverResponseDto deliveryDriverResponseDto = given()
+                .accept(ContentType.JSON)
+                .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
+                .pathParam("id", driverResponseDto.getId())
+                .log().all()
+                .when()
+                .get("/drivers/{id}")
+                .then()
+                .log().all()
+                .extract().as(DeliveryDriverResponseDto.class);
+
+        assertNotNull(deliveryDriverResponseDto.getId());
+    }
 }

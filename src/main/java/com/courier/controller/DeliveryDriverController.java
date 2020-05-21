@@ -6,6 +6,7 @@ import com.courier.domain.dtos.DeliveryDriverResponseDto;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.exception.CannotCreateDriverProfileException;
 import com.courier.exception.CourierUserNotFoundException;
+import com.courier.exception.DeliveryDriverNotFoundException;
 import com.courier.service.CourierUserService;
 import com.courier.service.DeliveryDriverService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -45,17 +48,34 @@ public class DeliveryDriverController {
         return new ResponseEntity(deliveryDriverResponseDto, HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<DeliveryDriverResponseDto> getDriver(@PathVariable Long id) throws DeliveryDriverNotFoundException {
+        DeliveryDriverResponseDto deliveryDriverResponseDto = deliveryDriverService.getDeliveryDriver(id);
+        return new ResponseEntity(deliveryDriverResponseDto,HttpStatus.OK);
+    }
+
     @Secured("ROLE_ADMIN")
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<DeliveryDriverResponseDto>> retrieveAllDrivers(
             @RequestParam(required = false) String status) {
 
+        EnumSet<DeliveryDriverStatus> deliveryDriverStatuses = EnumSet.allOf(DeliveryDriverStatus.class);
+        Iterator<DeliveryDriverStatus> iterator = deliveryDriverStatuses.iterator();
+
         if (status != null) {
-            List<DeliveryDriverResponseDto> deliveryDriverResponseDtoList =
-                    deliveryDriverService.getAllDeliveryDrivers(DeliveryDriverStatus.valueOf(status.toUpperCase()));
-            return new ResponseEntity(deliveryDriverResponseDtoList, HttpStatus.OK);
+            while (iterator.hasNext()) {
+                if (iterator.next().name().toUpperCase().equals(status.toUpperCase())) {
+                    List<DeliveryDriverResponseDto> deliveryDriverResponseDtoList =
+                            deliveryDriverService.getAllDeliveryDrivers(DeliveryDriverStatus.valueOf(status.toUpperCase()));
+                    return new ResponseEntity(deliveryDriverResponseDtoList, HttpStatus.OK);
+                }
+            }
         }
+
+
         List<DeliveryDriverResponseDto> deliveryDriverResponseDtoList = deliveryDriverService.getAllDeliveryDrivers();
         return new ResponseEntity(deliveryDriverResponseDtoList, HttpStatus.OK);
     }
+
+
 }
