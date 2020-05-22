@@ -16,5 +16,4 @@ public interface DeliveryDriverRepository  extends CrudRepository<DeliveryDriver
 
     Iterable<DeliveryDriver> findByDeliveryDriverStatus(DeliveryDriverStatus status);
 
-
 }

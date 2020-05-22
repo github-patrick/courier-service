@@ -77,4 +77,11 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
                 HttpStatus.NOT_FOUND.value());
         return new ResponseEntity(errorApi, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(CannotUpdateOtherUsersStatusException.class)
+    public ResponseEntity<Object> handleCannotUpdateOtherUsersStatusException(CannotUpdateOtherUsersStatusException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.FORBIDDEN.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity(errorApi, HttpStatus.FORBIDDEN);
+    }
 }

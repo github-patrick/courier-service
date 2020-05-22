@@ -3,6 +3,7 @@ package com.courier.bdd.steps;
 import com.courier.bdd.Context;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.dtos.DeliveryDriverStatusDto;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.exception.CannotCreateDriverProfileException;
 import com.courier.exception.DeliveryDriverNotFoundException;
@@ -68,9 +69,9 @@ public class DeliveryDriverSteps {
 
     @When("I attempt to change my profile status to {string}")
     public void i_attempt_to_change_my_profile_status_to(String type) throws DeliveryDriverNotFoundException {
-        DeliveryDriverRequestDto deliveryDriverRequestDto = DeliveryDriverRequestDto.builder().
+        DeliveryDriverStatusDto deliveryDriverStatusDto = DeliveryDriverStatusDto.builder().
                 deliveryDriverStatus(DeliveryDriverStatus.valueOf(type.toUpperCase())).build();
-        deliverDriverService.updateStatus(deliveryDriverRequestDto, context.getDeliveryDriver().getId());
+        deliverDriverService.updateStatus(deliveryDriverStatusDto, context.getDeliveryDriver().getId());
     }
 
     @Then("the driver profile should be created in the system")
@@ -108,7 +109,6 @@ public class DeliveryDriverSteps {
                 .filter(driver -> driver.getCourierUser().equals(context.getCourierUser())).findFirst().get();
 
         assertEquals(DeliveryDriverStatus.valueOf(type), deliveryDriverResponseDto.getDeliveryDriverStatus());
-
     }
 
 

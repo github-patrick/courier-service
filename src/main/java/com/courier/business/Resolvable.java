@@ -5,5 +5,5 @@ import com.courier.domain.dtos.DeliveryDriverRequestDto;
 @FunctionalInterface
 public interface Resolvable<T> {
 
-    void updateStatus(T response, Long id) throws Exception;
+    void updateStatus(T body, Long id) throws Exception;
 }

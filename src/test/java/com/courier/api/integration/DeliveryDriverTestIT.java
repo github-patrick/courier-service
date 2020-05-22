@@ -3,6 +3,8 @@ package com.courier.api.integration;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.dtos.DeliveryDriverStatusDto;
+import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.domain.enums.UserType;
 import com.courier.exception.ErrorApi;
 import com.courier.utils.DeliveryDriverUtils;
@@ -134,5 +136,40 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .extract().as(DeliveryDriverResponseDto.class);
 
         assertNotNull(deliveryDriverResponseDto.getId());
+    }
+
+    @Test
+    public void shouldUpdateDriverStatus() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.DRIVER);
+        DeliveryDriverResponseDto driverResponseDto = DeliveryDriverUtils.createDeliveryDriver(courierUserResponseDto);
+
+        DeliveryDriverStatusDto deliveryDriverStatus =
+                DeliveryDriverStatusDto.builder().deliveryDriverStatus(DeliveryDriverStatus.AVAILABLE).build();
+
+        given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
+                .pathParam("id", driverResponseDto.getId())
+                .body(deliveryDriverStatus)
+                .log().all()
+        .when()
+                .patch("/drivers/{id}")
+        .then()
+                .log().all()
+                .statusCode(204);
+
+        DeliveryDriverResponseDto deliveryDriverResponseDto = given()
+                .accept(ContentType.JSON)
+                .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
+                .pathParam("id", driverResponseDto.getId())
+                .log().all()
+                .when()
+                .get("/drivers/{id}")
+                .then()
+                .log().all()
+                .extract().as(DeliveryDriverResponseDto.class);
+
+        assertEquals(DeliveryDriverStatus.AVAILABLE.name(), deliveryDriverResponseDto.getDeliveryDriverStatus().name());
     }
 }

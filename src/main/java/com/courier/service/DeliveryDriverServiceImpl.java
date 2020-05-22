@@ -6,6 +6,7 @@ import com.courier.domain.DeliveryDriver;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.dtos.DeliveryDriverStatusDto;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.domain.enums.UserType;
 import com.courier.exception.CannotCreateDriverProfileException;
@@ -79,11 +80,11 @@ public class DeliveryDriverServiceImpl implements DeliveryDriverService, DriverS
                 deliveryDriverRepository.findById(id).orElseThrow(DeliveryDriverNotFoundException::new), DeliveryDriverResponseDto.class);
     }
 
-    @Override
-    public void updateStatus(DeliveryDriverRequestDto deliveryDriverRequestDto, Long driverId) throws DeliveryDriverNotFoundException {
-        DeliveryDriverResponseDto driverResponseDto = getDeliveryDriver(driverId);
 
-        driverResponseDto.setDeliveryDriverStatus(deliveryDriverRequestDto.getDeliveryDriverStatus());
+    @Override
+    public void updateStatus(DeliveryDriverStatusDto deliveryDriverStatusDto, Long driverId) throws DeliveryDriverNotFoundException {
+        DeliveryDriverResponseDto driverResponseDto = getDeliveryDriver(driverId);
+        driverResponseDto.setDeliveryDriverStatus(deliveryDriverStatusDto.getDeliveryDriverStatus());
         deliveryDriverRepository.save(modelMapper.map(driverResponseDto, DeliveryDriver.class));
     }
 }

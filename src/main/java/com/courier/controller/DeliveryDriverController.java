@@ -3,23 +3,25 @@ package com.courier.controller;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.dtos.DeliveryDriverStatusDto;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.exception.CannotCreateDriverProfileException;
+import com.courier.exception.CannotUpdateOtherUsersStatusException;
 import com.courier.exception.CourierUserNotFoundException;
 import com.courier.exception.DeliveryDriverNotFoundException;
 import com.courier.service.CourierUserService;
 import com.courier.service.DeliveryDriverService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
+import java.security.Principal;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -71,10 +73,25 @@ public class DeliveryDriverController {
                 }
             }
         }
-
-
         List<DeliveryDriverResponseDto> deliveryDriverResponseDtoList = deliveryDriverService.getAllDeliveryDrivers();
         return new ResponseEntity(deliveryDriverResponseDtoList, HttpStatus.OK);
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_DRIVER"})
+    @PatchMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> updateStatus(@RequestBody @Valid DeliveryDriverStatusDto deliveryDriverStatusDto,
+                                          @PathVariable Long id, Principal principal, Authentication authentication)
+            throws DeliveryDriverNotFoundException, CannotUpdateOtherUsersStatusException {
+
+        if (authentication.getAuthorities().contains("ROLE_ADMIN")) {
+            deliveryDriverService.updateStatus(deliveryDriverStatusDto, id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } if (!principal.getName().equals(deliveryDriverService.getDeliveryDriver(id).getCourierUser().getEmail())) {
+            throw new CannotUpdateOtherUsersStatusException("You can only update your driver's status.");
+        }
+
+        deliveryDriverService.updateStatus(deliveryDriverStatusDto, id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 

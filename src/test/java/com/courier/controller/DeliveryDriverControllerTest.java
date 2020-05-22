@@ -3,6 +3,7 @@ package com.courier.controller;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
+import com.courier.domain.dtos.DeliveryDriverStatusDto;
 import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.exception.CannotCreateDriverProfileException;
 import com.courier.exception.CourierUserNotFoundException;
@@ -31,13 +32,12 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WithMockUser(roles = "DRIVER")
+@WithMockUser(roles = "DRIVER", username = "user@courier.com")
 @WebMvcTest(controllers = DeliveryDriverController.class)
 public class
 DeliveryDriverControllerTest {
@@ -312,5 +312,68 @@ DeliveryDriverControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", is(HttpStatus.NOT_FOUND.getReasonPhrase())));
+    }
+
+    @Test
+    public void updateDriverStatus() throws Exception {
+
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserDriverResponseDto();
+        courierUserResponseDto.setEmail("user@courier.com");
+        DeliveryDriverResponseDto deliveryDriverResponseDto = DeliveryDriverUtils.getDeliveryDriverResponseDto(courierUserResponseDto);
+        DeliveryDriverStatusDto deliveryDriverStatus =
+                DeliveryDriverStatusDto.builder().deliveryDriverStatus(DeliveryDriverStatus.AVAILABLE).build();
+
+
+        when(deliveryDriverService.getDeliveryDriver(1L)).thenReturn(deliveryDriverResponseDto);
+
+
+        mockMvc.perform(patch("/api/v1/drivers/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsBytes(deliveryDriverStatus)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void updateWithInvalidDriverStatus() throws Exception {
+
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserDriverResponseDto();
+        courierUserResponseDto.setEmail("user@courier.com");
+        DeliveryDriverResponseDto deliveryDriverResponseDto = DeliveryDriverUtils.getDeliveryDriverResponseDto(courierUserResponseDto);
+        DeliveryDriverStatusDto deliveryDriverStatus =
+                DeliveryDriverStatusDto.builder().deliveryDriverStatus(DeliveryDriverStatus.AVAILABLE).build();
+
+
+        when(deliveryDriverService.getDeliveryDriver(1L)).thenReturn(deliveryDriverResponseDto);
+
+
+        mockMvc.perform(patch("/api/v1/drivers/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+                .content("{\"deliveryDriverStatus\":\"AVAILABLE_ERROR\"}"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void driverCanOnlyUpdateTheirStatus() throws Exception {
+
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserDriverResponseDto();
+        DeliveryDriverResponseDto deliveryDriverResponseDto = DeliveryDriverUtils.getDeliveryDriverResponseDto(courierUserResponseDto);
+        DeliveryDriverStatusDto deliveryDriverStatus =
+                DeliveryDriverStatusDto.builder().deliveryDriverStatus(DeliveryDriverStatus.AVAILABLE).build();
+
+        when(deliveryDriverService.getDeliveryDriver(1L)).thenReturn(deliveryDriverResponseDto);
+
+        mockMvc.perform(patch("/api/v1/drivers/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsBytes(deliveryDriverStatus)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 }
