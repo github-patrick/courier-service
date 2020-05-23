@@ -9,6 +9,7 @@ import com.courier.exception.CannotCreateCustomerProfileException;
 import com.courier.repository.CustomerRepository;
 import com.courier.utils.CustomerUtils;
 import com.courier.utils.UserUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("customer")
 class CustomerServiceImplTest {
 
     @Spy

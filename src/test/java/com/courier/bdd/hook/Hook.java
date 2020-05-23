@@ -20,8 +20,6 @@ import org.springframework.test.context.TestPropertySource;
 @ContextConfiguration(classes = {CourierServiceApplication.class, AppConfig.class, TestConfig.class})
 @TestPropertySource("classpath:application-test.properties")
 @Slf4j
-//@SpringBootTest(classes = {CourierServiceApplication.class, AppConfig.class, TestConfig.class})
-//@ActiveProfiles("dev")
 public class Hook {
 
     @Autowired

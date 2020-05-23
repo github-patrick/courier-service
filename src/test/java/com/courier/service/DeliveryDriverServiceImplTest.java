@@ -11,6 +11,7 @@ import com.courier.repository.DeliveryDriverRepository;
 import com.courier.utils.DeliveryDriverUtils;
 import com.courier.utils.UserUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("delivery-driver")
 class DeliveryDriverServiceImplTest {
 
     @Spy

@@ -8,12 +8,14 @@ import com.courier.utils.UserUtils;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("courier-user")
 public class CourierUserTestIT extends BaseTest {
 
     private RequestSpecBuilder requestSpecBuilder;

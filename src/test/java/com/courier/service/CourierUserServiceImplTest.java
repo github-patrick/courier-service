@@ -9,6 +9,7 @@ import com.courier.exception.CannotRegisterUserException;
 import com.courier.exception.CourierUserNotFoundException;
 import com.courier.repository.CourierUserRepository;
 import com.courier.utils.UserUtils;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -34,6 +35,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("courier-user")
 class CourierUserServiceImplTest {
 
     @Mock

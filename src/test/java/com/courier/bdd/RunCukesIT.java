@@ -8,5 +8,4 @@ import org.springframework.test.context.ActiveProfiles;
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "classpath:features", glue = {"com.courier.bdd.steps",
         "com.courier.bdd.hook"}, plugin = "pretty")
-public class RunCukesIT {
-}
+public class RunCukesIT {}

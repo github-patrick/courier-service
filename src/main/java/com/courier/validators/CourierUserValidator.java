@@ -21,9 +21,13 @@ public class CourierUserValidator implements Validator {
         CourierUserRequestDto courierUserRequestDto = (CourierUserRequestDto)target;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "types", "User type cannot be empty or contain white spaces.");
 
-        if (courierUserRequestDto.getPassword().length() < 6) {
-            errors.rejectValue("password", "Password should be greater than 5 characters.");
+
+        if (courierUserRequestDto.getPassword() != null) {
+            if (courierUserRequestDto.getPassword().length() < 6) {
+                errors.rejectValue("password", "Password should be greater than 5 characters.");
+            }
         }
+
         if (!(courierUserRequestDto.getTypes() == null)) {
             courierUserRequestDto.getTypes().forEach(userType -> {
                 if (!Arrays.asList(UserType.CUSTOMER, UserType.DRIVER, UserType.ADMIN).contains(userType)) {

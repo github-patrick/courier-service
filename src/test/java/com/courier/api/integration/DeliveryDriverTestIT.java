@@ -11,6 +11,7 @@ import com.courier.utils.DeliveryDriverUtils;
 import com.courier.utils.UserUtils;
 import io.restassured.http.ContentType;
 import io.restassured.response.ResponseBodyExtractionOptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -24,6 +25,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Tag("delivery-driver")
 public class DeliveryDriverTestIT extends BaseTest {
 
 
