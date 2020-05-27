@@ -34,11 +34,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 @WebMvcTest(controllers = CustomerController.class)
-@WithMockUser(roles = "CUSTOMER")
+@WithMockUser(roles = "CUSTOMER", username = CustomerControllerTest.EMAIL)
 @Tag("customer")
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 class CustomerControllerTest {
+
+    public static final String EMAIL = "user@courier.com";
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,6 +60,7 @@ class CustomerControllerTest {
     @Test
     public void createCustomerProfile() throws Exception {
         CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
+        courierUserRequestDto.setEmail(CustomerControllerTest.EMAIL);
         CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
         customerRequestDto.setEmail(courierUserRequestDto.getEmail());
 
@@ -72,6 +75,7 @@ class CustomerControllerTest {
     @Test
     public void createCustomerProfileViaXml() throws Exception {
         CourierUserResponseDto courierUserResponseDto = UserUtils.getUserResponseDto(UserType.CUSTOMER);
+        courierUserResponseDto.setEmail(CustomerControllerTest.EMAIL);
         CustomerRequestDto customerRequestDto = CustomerUtils.getCustomerRequestDto();
         customerRequestDto.setEmail(courierUserResponseDto.getEmail());
 

@@ -5,10 +5,7 @@ import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
 import com.courier.domain.dtos.DeliveryDriverStatusDto;
 import com.courier.domain.enums.DeliveryDriverStatus;
-import com.courier.exception.CannotCreateDriverProfileException;
-import com.courier.exception.CannotUpdateOtherUsersStatusException;
-import com.courier.exception.CourierUserNotFoundException;
-import com.courier.exception.DeliveryDriverNotFoundException;
+import com.courier.exception.*;
 import com.courier.service.CourierUserService;
 import com.courier.service.DeliveryDriverService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +39,14 @@ public class DeliveryDriverController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<DeliveryDriverResponseDto> createDriver(@RequestBody @Valid DeliveryDriverRequestDto deliveryDriverRequestDto)
-            throws CourierUserNotFoundException, CannotCreateDriverProfileException {
+    public ResponseEntity<DeliveryDriverResponseDto> createDriver(@RequestBody @Valid DeliveryDriverRequestDto deliveryDriverRequestDto,
+                                                                  Principal principal)
+            throws CourierUserNotFoundException, CannotCreateDriverProfileException, CannotCreateProfileViolationException {
 
         CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(deliveryDriverRequestDto.getEmail());
+        if (!deliveryDriverRequestDto.getEmail().equals(principal.getName())) {
+            throw new CannotCreateProfileViolationException("You cannot create a profile for an account that you do not own.");
+        }
         DeliveryDriverResponseDto deliveryDriverResponseDto = deliveryDriverService.addDeliveryDriver(deliveryDriverRequestDto, courierUserResponseDto);
         return new ResponseEntity(deliveryDriverResponseDto, HttpStatus.CREATED);
     }

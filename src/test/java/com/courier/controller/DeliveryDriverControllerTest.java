@@ -41,13 +41,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WithMockUser(roles = "DRIVER", username = "user@courier.com")
+@WithMockUser(roles = "DRIVER", username = DeliveryDriverControllerTest.EMAIL)
 @WebMvcTest(controllers = DeliveryDriverController.class)
 @Tag("delivery-driver")
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class
 DeliveryDriverControllerTest {
+
+    public static final String EMAIL = "user@courier.com";
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,6 +69,7 @@ DeliveryDriverControllerTest {
     @Test
     public void createDeliveryDriverProfile() throws Exception {
         DeliveryDriverRequestDto deliveryDriverRequestDto = DeliveryDriverUtils.getDeliveryDriverRequestDto();
+        deliveryDriverRequestDto.setEmail(DeliveryDriverControllerTest.EMAIL);
         CourierUserResponseDto userDriverResponseDto = UserUtils.getUserDriverResponseDto();
 
         when(courierUserService.getCourierUserByEmail(deliveryDriverRequestDto.getEmail())).thenReturn(userDriverResponseDto);
@@ -87,6 +90,7 @@ DeliveryDriverControllerTest {
     @Test
     public void createDeliveryDriverProfileViaXml() throws Exception {
         DeliveryDriverRequestDto deliveryDriverRequestDto = DeliveryDriverUtils.getDeliveryDriverRequestDto();
+        deliveryDriverRequestDto.setEmail(DeliveryDriverControllerTest.EMAIL);
         CourierUserResponseDto userDriverResponseDto = UserUtils.getUserDriverResponseDto();
 
         when(courierUserService.getCourierUserByEmail(deliveryDriverRequestDto.getEmail())).thenReturn(userDriverResponseDto);
@@ -123,6 +127,7 @@ DeliveryDriverControllerTest {
     @Test
     public void createDriverProfileWithCannotCreateDriverProfileException() throws Exception {
         DeliveryDriverRequestDto deliveryDriverRequestDto = DeliveryDriverUtils.getDeliveryDriverRequestDto();
+        deliveryDriverRequestDto.setEmail(DeliveryDriverControllerTest.EMAIL);
         CourierUserResponseDto userDriverResponseDto = UserUtils.getUserDriverResponseDto();
 
         when(courierUserService.getCourierUserByEmail(deliveryDriverRequestDto.getEmail())).thenReturn(userDriverResponseDto);

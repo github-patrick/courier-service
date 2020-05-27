@@ -4,6 +4,7 @@ import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.CustomerRequestDto;
 import com.courier.domain.dtos.CustomerResponseDto;
 import com.courier.exception.CannotCreateCustomerProfileException;
+import com.courier.exception.CannotCreateProfileViolationException;
 import com.courier.exception.CourierUserNotFoundException;
 import com.courier.service.CourierUserService;
 import com.courier.service.CustomerService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -33,11 +35,16 @@ public class CustomerController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<CustomerResponseDto> createCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto)
-            throws CannotCreateCustomerProfileException, CourierUserNotFoundException {
+    public ResponseEntity<CustomerResponseDto> createCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto,
+                                                              Principal principal)
+            throws CannotCreateCustomerProfileException, CourierUserNotFoundException, CannotCreateProfileViolationException {
         log.debug("Incoming customer request body {}",customerRequestDto);
-
         CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(customerRequestDto.getEmail());
+
+        if (!customerRequestDto.getEmail().equals(principal.getName())) {
+            throw new CannotCreateProfileViolationException("You cannot create a profile for an account that you do not own.");
+        }
+
         log.debug("Courier user account found via the email {}, courier user account: {}",customerRequestDto.getEmail(),courierUserResponseDto);
         return new ResponseEntity(customerService.addCustomer(customerRequestDto,courierUserResponseDto), HttpStatus.CREATED);
     }

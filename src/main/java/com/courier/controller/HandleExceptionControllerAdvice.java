@@ -100,4 +100,12 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
     }
 
 
+    @ExceptionHandler(CannotCreateProfileViolationException.class)
+    public ResponseEntity<Object> handleCannotCreateProfileViolationException(CannotCreateProfileViolationException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.FORBIDDEN.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity(errorApi, HttpStatus.FORBIDDEN);
+    }
+
+
 }
