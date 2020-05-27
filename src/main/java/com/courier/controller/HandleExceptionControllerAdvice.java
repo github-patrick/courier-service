@@ -84,4 +84,20 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
                 HttpStatus.FORBIDDEN.value());
         return new ResponseEntity(errorApi, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<Object> handleCustomerNotFoundException(CustomerNotFoundException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.NOT_FOUND.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity(errorApi, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CannotCreateParcelException.class)
+    public ResponseEntity<Object> handleCannotCreateParcelException(CannotCreateParcelException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.FORBIDDEN.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity(errorApi, HttpStatus.FORBIDDEN);
+    }
+
+
 }

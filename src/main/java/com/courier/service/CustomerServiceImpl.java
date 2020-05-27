@@ -7,6 +7,7 @@ import com.courier.domain.dtos.CustomerRequestDto;
 import com.courier.domain.dtos.CustomerResponseDto;
 import com.courier.domain.enums.UserType;
 import com.courier.exception.CannotCreateCustomerProfileException;
+import com.courier.exception.CustomerNotFoundException;
 import com.courier.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -49,12 +51,21 @@ public class CustomerServiceImpl implements CustomerService {
         return modelMapper.map(customerSaved, CustomerResponseDto.class);
     }
 
-
     public List<CustomerResponseDto> getAllCustomers() {
         List<CustomerResponseDto> customerResponseDtos = new ArrayList();
         customerRepository.findAll().forEach(customer ->
                 customerResponseDtos.add(modelMapper.map(customer, CustomerResponseDto.class)));
         return customerResponseDtos;
+    }
+
+    @Override
+    public CustomerResponseDto getCustomer(Long id) throws CustomerNotFoundException {
+        Optional<Customer> customerFound = customerRepository.findById(id);
+        if (customerFound.isPresent()) {
+            return modelMapper.map(customerFound.get(),CustomerResponseDto.class);
+        } else {
+            throw new CustomerNotFoundException("customer with id " + id + " does not exist");
+        }
     }
 
     private void checkIfCustomerUserHasRegisteredProfile(CourierUserResponseDto courierUserResponseDto)

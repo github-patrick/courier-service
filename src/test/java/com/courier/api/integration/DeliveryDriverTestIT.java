@@ -40,11 +40,9 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(deliveryDriverRequestDto)
-                .log().all()
                 .when()
                 .post("drivers")
                 .then()
-                .log().all()
                 .statusCode(201)
                 .extract().as(DeliveryDriverResponseDto.class);
 
@@ -62,11 +60,9 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(deliveryDriverRequestDto)
-                .log().all()
                 .when()
                 .post("drivers")
                 .then()
-                .log().all()
                 .statusCode(403).extract().body();
 
         String errorMessage = body.jsonPath().getString("error");
@@ -85,11 +81,9 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(deliveryDriverRequestDto)
-                .log().all()
                 .when()
                 .post("drivers")
                 .then()
-                .log().all()
                 .statusCode(400)
                 .extract().as(ErrorApi.class);
 
@@ -110,12 +104,10 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .accept(ContentType.JSON)
                 .auth().preemptive().basic(courierUserOne.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
                 .queryParam("status","unavailable")
-                .log().all()
                 .when()
                 .get("drivers")
                 .then()
                 .statusCode(200)
-                .log().all()
                 .extract().as(DeliveryDriverResponseDto[].class);
 
         assertEquals(2, Arrays.asList(drivers).size());
@@ -130,11 +122,9 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .accept(ContentType.JSON)
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
                 .pathParam("id", driverResponseDto.getId())
-                .log().all()
                 .when()
                 .get("/drivers/{id}")
                 .then()
-                .log().all()
                 .extract().as(DeliveryDriverResponseDto.class);
 
         assertNotNull(deliveryDriverResponseDto.getId());
@@ -154,22 +144,18 @@ public class DeliveryDriverTestIT extends BaseTest {
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
                 .pathParam("id", driverResponseDto.getId())
                 .body(deliveryDriverStatus)
-                .log().all()
         .when()
                 .patch("/drivers/{id}")
         .then()
-                .log().all()
                 .statusCode(204);
 
         DeliveryDriverResponseDto deliveryDriverResponseDto = given()
                 .accept(ContentType.JSON)
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
                 .pathParam("id", driverResponseDto.getId())
-                .log().all()
                 .when()
                 .get("/drivers/{id}")
                 .then()
-                .log().all()
                 .extract().as(DeliveryDriverResponseDto.class);
 
         assertEquals(DeliveryDriverStatus.AVAILABLE.name(), deliveryDriverResponseDto.getDeliveryDriverStatus().name());

@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Tag("courier-user")
 public class CourierUserTestIT extends BaseTest {
 
-    private RequestSpecBuilder requestSpecBuilder;
-
     public CourierUserTestIT() {
         requestSpecBuilder = new RequestSpecBuilder();
     }
@@ -28,17 +26,15 @@ public class CourierUserTestIT extends BaseTest {
     public void shouldCreateCourier() {
         CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.CUSTOMER);
 
-        requestSpecBuilder.setAccept(ContentType.JSON)
+        this.requestSpecBuilder.setAccept(ContentType.JSON)
                 .setContentType(ContentType.JSON)
                 .setBody(courierUserRequestDto);
 
         Response response = given()
                 .spec(requestSpecBuilder.build())
-                .log().all()
                 .when()
                 .post("courier-users")
                 .then()
-                .log().all()
                 .statusCode(201).extract().response();
 
         CourierUserResponseDto courierUserResponseDto = response.as(CourierUserResponseDto.class);
@@ -57,11 +53,9 @@ public class CourierUserTestIT extends BaseTest {
 
         Response response = given()
                 .spec(requestSpecBuilder.build())
-                .log().all()
                 .when()
                 .post("courier-users")
                 .then()
-                .log().all()
                 .statusCode(400).extract().response();
 
         ErrorApi errorApi = response.as(ErrorApi.class);
@@ -78,11 +72,9 @@ public class CourierUserTestIT extends BaseTest {
 
         Response response = given()
                 .spec(requestSpecBuilder.build())
-                .log().all()
                 .when()
                 .post("courier-users")
                 .then()
-                .log().all()
                 .statusCode(201).extract().response();
 
         CourierUserResponseDto courierUserResponseDto = response.as(CourierUserResponseDto.class);
@@ -100,11 +92,9 @@ public class CourierUserTestIT extends BaseTest {
 
         Response response = given()
                 .spec(requestSpecBuilder.build())
-                .log().all()
                 .when()
                 .post("courier-users")
                 .then().statusCode(400)
-                .log().all()
                 .extract().response();
 
         ErrorApi errorApi = response.as(ErrorApi.class);

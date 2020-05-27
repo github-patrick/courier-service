@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @Builder
@@ -28,4 +30,7 @@ public class DeliveryDriver extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "COURIER_USER_ID")
     private CourierUser courierUser;
+
+    @OneToMany(mappedBy = "deliverer")
+    private Set<Parcel> parcels = new HashSet<>();
 }

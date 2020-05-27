@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -26,4 +28,7 @@ public class Customer extends BaseEntity {
     @JoinColumn(name = "COURIER_USER_ID")
     @NotNull
     private CourierUser courierUser;
+
+    @OneToMany(mappedBy = "sender")
+    private Set<Parcel> parcels = new HashSet<>();
 }

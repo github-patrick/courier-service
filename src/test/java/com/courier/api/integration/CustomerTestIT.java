@@ -32,11 +32,9 @@ public class CustomerTestIT extends BaseTest {
                 .contentType(ContentType.JSON)
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(),UserUtils.TEST_DEFAULT_PASSWORD)
                 .body(customerRequestDto)
-                .log().all()
                 .when()
                 .post("customers")
                 .then()
-                .log().all()
                 .statusCode(201);
 
         CustomerResponseDto customerResponseDto = response.extract().as(CustomerResponseDto.class);
@@ -56,11 +54,9 @@ public class CustomerTestIT extends BaseTest {
                 .contentType(ContentType.XML)
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(),UserUtils.TEST_DEFAULT_PASSWORD)
                 .body(customerRequestDto)
-                .log().all()
                 .when()
                 .post("customers")
                 .then()
-                .log().all()
                 .statusCode(201);
 
         CustomerResponseDto customerResponseDto = response.extract().as(CustomerResponseDto.class);
@@ -80,11 +76,9 @@ public class CustomerTestIT extends BaseTest {
                 .contentType(ContentType.JSON)
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(),UserUtils.TEST_DEFAULT_PASSWORD)
                 .body(customerRequestDto)
-                .log().all()
                 .when()
                 .post("customers")
                 .then()
-                .log().all()
                 .statusCode(400);
 
         ErrorApi errorApi = response.extract().as(ErrorApi.class);
@@ -105,11 +99,9 @@ public class CustomerTestIT extends BaseTest {
                 .contentType(ContentType.JSON)
                 .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
                 .body(customerRequestDto)
-                .log().all().
-                        when()
+                        .when()
                 .post("/customers")
                 .then()
-                .log().all()
                 .extract().as(ErrorApi.class);
 
         assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());
