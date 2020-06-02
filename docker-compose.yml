@@ -1,22 +1,24 @@
 version: '2.1'
 services:
   web:
-    container_name: courier_service_web
+#    container_name: courier_service_web
     depends_on:
-      - db
-#        condition: service_healthy
+      db:
+        condition: service_healthy
     build: ./docker
     ports:
-      - "8181:8080"
+      - "8444:8444"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
   db:
     container_name: db
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: courier_production
+      MYSQL_DATABASE: courier_db
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
-#    healthcheck:
-#      test: ["CMD", "ready for connections."]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 10s
+      timeout: 300s
+      retries: 20
