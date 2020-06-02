@@ -302,14 +302,14 @@
 											<SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
 											<SPRING_DATASOURCE_URL>jdbc:mysql://db:3306/courier_db</SPRING_DATASOURCE_URL>
 										</env>
-<!--										<wait>-->
-<!--											<http>-->
-<!--												<url>http://localhost:8444/api/v1/healthcheck</url>-->
-<!--												<method>GET</method>-->
-<!--												<status>200</status>-->
-<!--											</http>-->
-<!--											<time>1000000</time>-->
-<!--										</wait>-->
+										<wait>
+											<http>
+												<url>http://localhost:8444/api/v1/healthcheck</url>
+												<method>GET</method>
+												<status>200</status>
+											</http>
+											<time>1000000</time>
+										</wait>
 										<ports>
 											<port>8444:8444</port>
 										</ports>
