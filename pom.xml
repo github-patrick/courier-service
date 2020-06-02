@@ -288,6 +288,7 @@
 						<artifactId>docker-maven-plugin</artifactId>
 						<version>0.33.0</version>
 						<configuration>
+							<dockerHost>unix:///var/run/docker.sock</dockerHost>
 							<images>
 								<image>
 									<name>courier-image</name>
