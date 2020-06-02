@@ -136,6 +136,11 @@
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>${fasterxml.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.fabric8</groupId>
+			<artifactId>docker-maven-plugin</artifactId>
+			<version>0.33.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -278,9 +283,92 @@
 							<skipTests>true</skipTests>
 						</configuration>
 					</plugin>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.33.0</version>
+						<configuration>
+							<images>
+								<image>
+									<name>courier-image</name>
+									<alias>courier-alias</alias>
+									<build>
+										<dockerFile>${basedir}/docker/Dockerfile</dockerFile>
+									</build>
+									<run>
+										<containerNamePattern>%a</containerNamePattern>
+										<env>
+											<SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
+											<SPRING_DATASOURCE_URL>jdbc:mysql://db:3306/courier_db</SPRING_DATASOURCE_URL>
+										</env>
+<!--										<wait>-->
+<!--											<http>-->
+<!--												<url>http://localhost:8444/api/v1/healthcheck</url>-->
+<!--												<method>GET</method>-->
+<!--												<status>200</status>-->
+<!--											</http>-->
+<!--											<time>1000000</time>-->
+<!--										</wait>-->
+										<ports>
+											<port>8444:8444</port>
+										</ports>
+										<dependsOn>
+											<container>db</container>
+										</dependsOn>
+										<log>
+											<enabled>true</enabled>
+										</log>
+										<network>
+											<mode>custom</mode>
+											<name>test-network</name>
+											<alias>db</alias>
+										</network>
+									</run>
+								</image>
+								<image>
+									<name>mysql:latest</name>
+									<alias>db</alias>
+									<run>
+										<containerNamePattern>%a</containerNamePattern>
+										<env>
+											<MYSQL_DATABASE>courier_db</MYSQL_DATABASE>
+											<MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
+										</env>
+										<wait>
+											<time>90000</time>
+											<log>port: 3306</log>
+										</wait>
+										<log>
+											<enabled>true</enabled>
+										</log>
+										<network>
+											<mode>custom</mode>
+											<name>test-network</name>
+										</network>
+									</run>
+								</image>
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<id>start</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>build</goal>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
-
 		</profile>
 	</profiles>
 </project>
