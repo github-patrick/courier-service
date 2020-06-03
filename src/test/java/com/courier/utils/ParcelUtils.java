@@ -63,11 +63,5 @@ public class ParcelUtils {
         return parcelResponseDto;
     }
 
-    public static ParcelResponseDto createAndGetParcel() {
-        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
-        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
-        ParcelResponseDto parcel = ParcelUtils.createParcel(customerResponseDto, courierUserResponseDto);
-        return parcel;
-    }
 
 }

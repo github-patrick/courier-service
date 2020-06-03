@@ -1,23 +1,14 @@
 package com.courier.api.integration;
 
-import com.courier.domain.dtos.CourierUserRequestDto;
-import com.courier.domain.enums.UserType;
-import com.courier.utils.UserUtils;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extensions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static io.restassured.RestAssured.given;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -39,19 +30,4 @@ public class BaseTest {
         requestSpecBuilder = new RequestSpecBuilder();
         ResponseLoggingFilter.logResponseIfStatusCodeIs(201);
     }
-
-    @BeforeAll
-    public static void beforeAll() {
-        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.ADMIN);
-        courierUserRequestDto.setEmail(ADMIN_EMAIL);
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(courierUserRequestDto)
-                .when()
-                .post("courier-users")
-                .then()
-                .statusCode(201).extract().response();
-    }
-
 }

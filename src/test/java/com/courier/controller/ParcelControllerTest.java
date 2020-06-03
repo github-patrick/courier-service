@@ -283,11 +283,12 @@ public class ParcelControllerTest {
     public void updateParcel() throws Exception {
         ParcelRequestDto parcelRequestDto = ParcelRequestDto.builder().status(ParcelStatus.IN_TRANSIT).build();
 
-        mockMvc.perform(patch("/api/v1/parcels/{id}", 1L)
+        mockMvc.perform(patch("/api/v1/parcels/{id}", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsBytes(parcelRequestDto)))
+                .andDo(print())
                 .andExpect(status().isNoContent());
 
     }

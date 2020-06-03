@@ -1,9 +1,6 @@
 package com.courier.api.integration;
 
-import com.courier.domain.dtos.CourierUserResponseDto;
-import com.courier.domain.dtos.CustomerResponseDto;
-import com.courier.domain.dtos.ParcelRequestDto;
-import com.courier.domain.dtos.ParcelResponseDto;
+import com.courier.domain.dtos.*;
 import com.courier.domain.enums.ParcelStatus;
 import com.courier.domain.enums.Priority;
 import com.courier.domain.enums.UserType;
@@ -12,8 +9,7 @@ import com.courier.utils.ParcelUtils;
 import com.courier.utils.UserUtils;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 
 import java.util.HashMap;
@@ -23,7 +19,22 @@ import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ParcelTestIT extends BaseTest{
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class ParcelTestIT extends BaseTest {
+
+    @BeforeAll
+    public void beforeAll() {
+        CourierUserRequestDto courierUserRequestDto = UserUtils.getUser(UserType.ADMIN);
+        courierUserRequestDto.setEmail(ADMIN_EMAIL);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(courierUserRequestDto)
+                .when()
+                .post("courier-users")
+                .then()
+                .statusCode(201).extract().response();
+    }
 
     @DisplayName("Should add parcel for delivery")
     @Test
@@ -76,8 +87,9 @@ public class ParcelTestIT extends BaseTest{
 
     @Test
     public void getParcel() {
-        ParcelResponseDto parcel = ParcelUtils.createAndGetParcel();
-        CourierUserResponseDto courierUserResponseDto = parcel.getSender().getCourierUser();
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
+        ParcelResponseDto parcel = ParcelUtils.createParcel(customerResponseDto, courierUserResponseDto);
 
         RequestSpecification requestSpecification = this.requestSpecBuilder
                 .setAccept(ContentType.JSON)
@@ -98,14 +110,16 @@ public class ParcelTestIT extends BaseTest{
     @Test
     public void updateParcel() {
 
-        ParcelResponseDto parcel = ParcelUtils.createAndGetParcel();
-        CourierUserResponseDto courierUserResponseDto = parcel.getSender().getCourierUser();
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
+        ParcelResponseDto parcel = ParcelUtils.createParcel(customerResponseDto, courierUserResponseDto);
 
         Map<String,String> httpRequestBody = new HashMap();
         httpRequestBody.put("status", "IN_TRANSIT");
 
         RequestSpecification requestSpecification = this.requestSpecBuilder
                 .setAccept(ContentType.JSON)
+                .setContentType(ContentType.JSON)
                 .addPathParam("id", parcel.getId())
                 .setBody(httpRequestBody)
                 .setAuth(basic(ADMIN_EMAIL, "password")).build();

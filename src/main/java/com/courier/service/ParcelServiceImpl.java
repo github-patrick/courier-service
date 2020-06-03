@@ -35,7 +35,9 @@ public class ParcelServiceImpl implements ParcelService {
         parcelRequestDto.setSender(customerResponseDto);
         if (parcelRequestDto.getPriority() == null) {
             parcelRequestDto.setPriority(Priority.MEDIUM);
-        }
+        } if (parcelRequestDto.getStatus() == null) {
+            parcelRequestDto.setStatus(ParcelStatus.NOT_DISPATCHED);}
+
         log.info("Attempting to create a parcel for delivery");
         Parcel parcelSaved = parcelRepository.save(modelMapper.map(parcelRequestDto, Parcel.class));
         log.info("Parcel of id: {}", parcelSaved.getId());
@@ -80,6 +82,7 @@ public class ParcelServiceImpl implements ParcelService {
     public void updateParcel(Map<String,String> httpRequestBody, String id) throws ParcelNotFoundException {
         ParcelResponseDto parcelResponseDto = getParcel(id);
         String status = httpRequestBody.get("status");
+
         if (!StringUtils.isEmpty(status)) {
             parcelResponseDto.setStatus(ParcelStatus.valueOf(status));}
         Parcel parcelMapped = parcelRepository.save(modelMapper.map(parcelResponseDto, Parcel.class));

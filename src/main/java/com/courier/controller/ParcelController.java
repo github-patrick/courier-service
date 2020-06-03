@@ -5,6 +5,7 @@ import com.courier.domain.dtos.ParcelRequestDto;
 import com.courier.domain.dtos.ParcelResponseDto;
 import com.courier.domain.enums.ParcelStatus;
 import com.courier.domain.enums.Priority;
+import com.courier.domain.enums.UserType;
 import com.courier.exception.CannotCreateParcelException;
 import com.courier.exception.CustomerNotFoundException;
 import com.courier.exception.ParcelNotFoundException;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,11 +72,14 @@ public class ParcelController {
     }
 
     @GetMapping("/api/v1/parcels/{id}")
-    public ResponseEntity<ParcelResponseDto> getParcel(@PathVariable String id, Principal principal) throws ParcelNotFoundException,
+    public ResponseEntity<ParcelResponseDto> getParcel(@PathVariable String id, Authentication authentication) throws ParcelNotFoundException,
             CannotCreateParcelException {
         ParcelResponseDto parcelResponseDto = parcelService.getParcel(id);
 
-        if (!principal.getName().equals(parcelResponseDto.getSender().getCourierUser().getEmail())) {
+        if (authentication.getAuthorities().stream()
+                .filter(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN")).findFirst().isPresent()) {
+            return new ResponseEntity(parcelResponseDto, HttpStatus.OK); }
+        if (!authentication.getName().equals(parcelResponseDto.getSender().getCourierUser().getEmail())) {
             throw new CannotCreateParcelException("Cannot retrieve parcel for customer as you are not logged in with that account."); }
         return new ResponseEntity(parcelResponseDto, HttpStatus.OK);
     }
@@ -87,7 +93,7 @@ public class ParcelController {
     }
 
     @PatchMapping("/api/v1/parcels/{id}")
-    public ResponseEntity<?> updateParcel(@RequestBody Map<String, String> httpRequestBody, String id)
+    public ResponseEntity<?> updateParcel(@RequestBody Map<String, String> httpRequestBody, @PathVariable String id)
             throws ParcelNotFoundException {
         parcelService.updateParcel(httpRequestBody, id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
