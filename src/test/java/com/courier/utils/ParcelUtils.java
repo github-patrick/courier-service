@@ -1,14 +1,17 @@
 package com.courier.utils;
 
-import com.courier.domain.dtos.CustomerResponseDto;
-import com.courier.domain.dtos.ParcelRequestDto;
-import com.courier.domain.dtos.ParcelResponseDto;
+import com.courier.domain.dtos.*;
 import com.courier.domain.enums.ParcelStatus;
 import com.courier.domain.enums.Priority;
+import com.courier.domain.enums.UserType;
 import com.github.javafaker.Faker;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 import java.util.Date;
 import java.util.UUID;
+
+import static io.restassured.RestAssured.given;
 
 public class ParcelUtils {
 
@@ -31,4 +34,27 @@ public class ParcelUtils {
                 .sender(customerResponseDto)
                 .priority(Priority.MEDIUM).build();
     }
+
+    public static ParcelResponseDto createParcel(CustomerResponseDto customerResponseDto,
+                                                 CourierUserResponseDto courierUserResponseDto) {
+
+        ParcelRequestDto parcelRequestDto = ParcelUtils.getParcelRequestDto();
+
+        ParcelResponseDto parcelResponseDto = given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .auth().preemptive().basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)
+                .body(parcelRequestDto)
+                .log().all()
+                .pathParam("id", customerResponseDto.getId())
+                .when()
+                .post("customers/{id}/parcels")
+                .then()
+                .log().all()
+                .statusCode(201)
+                .extract().as(ParcelResponseDto.class);
+
+        return parcelResponseDto;
+    }
+
 }

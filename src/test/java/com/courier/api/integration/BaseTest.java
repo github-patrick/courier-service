@@ -22,10 +22,12 @@ public class BaseTest {
     protected ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter(LogDetail.BODY);
 
 
+
     public BaseTest() {
         RestAssured.baseURI = BASE_URI;
         RestAssured.port = 8444;
         RestAssured.basePath = BASE_PATH;
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         requestSpecBuilder = new RequestSpecBuilder();
         ResponseLoggingFilter.logResponseIfStatusCodeIs(201);
     }

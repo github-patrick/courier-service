@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParcelTestIT extends BaseTest{
 
@@ -64,11 +65,31 @@ public class ParcelTestIT extends BaseTest{
 
         given()
                 .spec(requestSpecification)
-                .log().all()
                 .when()
                 .post("customers/{id}/parcels")
                 .then()
-                .log().all()
                 .statusCode(201);
+    }
+
+    @Test
+    public void getParcel() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
+        ParcelResponseDto parcel = ParcelUtils.createParcel(customerResponseDto, courierUserResponseDto);
+
+        RequestSpecification requestSpecification = this.requestSpecBuilder
+                .setAccept(ContentType.JSON)
+                .addPathParam("id", parcel.getId())
+                .setAuth(basic(courierUserResponseDto.getEmail(), UserUtils.TEST_DEFAULT_PASSWORD)).build();
+
+        ParcelResponseDto parcelResponseDto = given()
+                .spec(requestSpecification)
+                .when()
+                .get("parcels/{id}")
+                .then()
+                .statusCode(200)
+                .extract().as(ParcelResponseDto.class);
+
+        assertEquals(ParcelStatus.NOT_DISPATCHED, parcelResponseDto.getStatus());
     }
 }

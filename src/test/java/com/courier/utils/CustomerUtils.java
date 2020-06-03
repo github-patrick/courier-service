@@ -22,6 +22,12 @@ public class CustomerUtils {
                 .createdAt(new Date()).modifiedAt(new Date()).build();
     }
 
+    public static CustomerResponseDto getCustomerResponseDto() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserCustomerResponseDto();
+        return CustomerResponseDto.builder().id(1l).fullName(faker.name().fullName()).courierUser(courierUserResponseDto)
+                .createdAt(new Date()).modifiedAt(new Date()).build();
+    }
+
     public static CustomerResponseDto createCustomer(CourierUserResponseDto courierUserResponseDto) {
 
         CustomerRequestDto customerRequestDto = getCustomerRequestDto();

@@ -27,12 +27,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests()
                 .antMatchers("/api/v1/courier-users").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
+
                 .antMatchers("/api/v1/customers")
                     .hasAnyRole("CUSTOMER","ADMIN")
                 .antMatchers("/api/v1/drivers")
                 .hasAnyRole("DRIVER","ADMIN")
                 .antMatchers("/api/v1/customers/**")
                     .hasAnyRole("CUSTOMER")
+                .antMatchers("/api/v1/parcels/**")
+                    .hasAnyRole("CUSTOMER","ADMIN")
                 .antMatchers("/api/v1/**").authenticated().and().httpBasic();
 
         http.csrf().disable();

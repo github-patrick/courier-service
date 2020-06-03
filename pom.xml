@@ -136,7 +136,7 @@
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>${fasterxml.version}</version>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>
