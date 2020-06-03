@@ -1,5 +1,6 @@
 package com.courier.utils;
 
+import com.courier.domain.Parcel;
 import com.courier.domain.dtos.*;
 import com.courier.domain.enums.ParcelStatus;
 import com.courier.domain.enums.Priority;
@@ -23,6 +24,11 @@ public class ParcelUtils {
 
     public static ParcelRequestDto getParcelRequestDto() {
         return ParcelRequestDto.builder().origin(faker.address().cityName()).destination(faker.address().cityName()).build();
+    }
+
+    public static Parcel getParcel() {
+        return Parcel.builder().origin(faker.address().cityName()).destination(faker.address().cityName())
+                .priority(Priority.MEDIUM).status(ParcelStatus.NOT_DISPATCHED).build();
     }
 
     public static ParcelResponseDto getParcelResponseDto(CustomerResponseDto customerResponseDto) {
@@ -55,6 +61,13 @@ public class ParcelUtils {
                 .extract().as(ParcelResponseDto.class);
 
         return parcelResponseDto;
+    }
+
+    public static ParcelResponseDto createAndGetParcel() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
+        ParcelResponseDto parcel = ParcelUtils.createParcel(customerResponseDto, courierUserResponseDto);
+        return parcel;
     }
 
 }

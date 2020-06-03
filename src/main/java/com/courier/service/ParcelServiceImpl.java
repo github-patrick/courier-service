@@ -9,14 +9,13 @@ import com.courier.domain.enums.Priority;
 import com.courier.exception.ParcelNotFoundException;
 import com.courier.repository.ParcelRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -50,7 +49,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         Optional<Parcel> parcel = parcelRepository.findById(id);
         if (!parcel.isPresent()) {
-            throw new ParcelNotFoundException("Parcel of id " + id + "does not exist");
+            throw new ParcelNotFoundException("Parcel of id " + id + " does not exist");
         }
         return modelMapper.map(parcel.get(), ParcelResponseDto.class);
     }
@@ -75,6 +74,16 @@ public class ParcelServiceImpl implements ParcelService {
         parcelRepository.findAll().forEach(parcel ->
                 parcelResponseDtoList.add(modelMapper.map(parcel,ParcelResponseDto.class)));
         return parcelResponseDtoList;
+    }
+
+    @Override
+    public void updateParcel(Map<String,String> httpRequestBody, String id) throws ParcelNotFoundException {
+        ParcelResponseDto parcelResponseDto = getParcel(id);
+        String status = httpRequestBody.get("status");
+        if (!StringUtils.isEmpty(status)) {
+            parcelResponseDto.setStatus(ParcelStatus.valueOf(status));}
+        Parcel parcelMapped = parcelRepository.save(modelMapper.map(parcelResponseDto, Parcel.class));
+        parcelRepository.save(parcelMapped);
     }
 
 

@@ -1,9 +1,11 @@
 package com.courier.controller;
 
+import com.courier.domain.Parcel;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.CustomerResponseDto;
 import com.courier.domain.dtos.ParcelRequestDto;
 import com.courier.domain.dtos.ParcelResponseDto;
+import com.courier.domain.enums.ParcelStatus;
 import com.courier.exception.CustomerNotFoundException;
 import com.courier.exception.ParcelNotFoundException;
 import com.courier.security.CourierUserDetailsService;
@@ -36,8 +38,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -275,6 +276,20 @@ public class ParcelControllerTest {
                 .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("The updating of the parcel")
+    public void updateParcel() throws Exception {
+        ParcelRequestDto parcelRequestDto = ParcelRequestDto.builder().status(ParcelStatus.IN_TRANSIT).build();
+
+        mockMvc.perform(patch("/api/v1/parcels/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsBytes(parcelRequestDto)))
+                .andExpect(status().isNoContent());
+
     }
 
 

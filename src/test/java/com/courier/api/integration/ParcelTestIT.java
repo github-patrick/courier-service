@@ -16,6 +16,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -73,9 +76,8 @@ public class ParcelTestIT extends BaseTest{
 
     @Test
     public void getParcel() {
-        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
-        CustomerResponseDto customerResponseDto = CustomerUtils.createCustomer(courierUserResponseDto);
-        ParcelResponseDto parcel = ParcelUtils.createParcel(customerResponseDto, courierUserResponseDto);
+        ParcelResponseDto parcel = ParcelUtils.createAndGetParcel();
+        CourierUserResponseDto courierUserResponseDto = parcel.getSender().getCourierUser();
 
         RequestSpecification requestSpecification = this.requestSpecBuilder
                 .setAccept(ContentType.JSON)
@@ -91,5 +93,28 @@ public class ParcelTestIT extends BaseTest{
                 .extract().as(ParcelResponseDto.class);
 
         assertEquals(ParcelStatus.NOT_DISPATCHED, parcelResponseDto.getStatus());
+    }
+
+    @Test
+    public void updateParcel() {
+
+        ParcelResponseDto parcel = ParcelUtils.createAndGetParcel();
+        CourierUserResponseDto courierUserResponseDto = parcel.getSender().getCourierUser();
+
+        Map<String,String> httpRequestBody = new HashMap();
+        httpRequestBody.put("status", "IN_TRANSIT");
+
+        RequestSpecification requestSpecification = this.requestSpecBuilder
+                .setAccept(ContentType.JSON)
+                .addPathParam("id", parcel.getId())
+                .setBody(httpRequestBody)
+                .setAuth(basic(ADMIN_EMAIL, "password")).build();
+
+        given()
+                .spec(requestSpecification)
+                .when()
+                .patch("parcels/{id}")
+                .then()
+                .statusCode(204);
     }
 }

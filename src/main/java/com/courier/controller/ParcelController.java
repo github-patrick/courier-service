@@ -25,6 +25,7 @@ import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -83,5 +84,12 @@ public class ParcelController {
                                                                  @RequestParam(required = false) Priority priority) {
         List<ParcelResponseDto> parcelResponseDtoList = parcelService.getAllParcels(parcelStatus, priority);
         return new ResponseEntity(parcelResponseDtoList,HttpStatus.OK);
+    }
+
+    @PatchMapping("/api/v1/parcels/{id}")
+    public ResponseEntity<?> updateParcel(@RequestBody Map<String, String> httpRequestBody, String id)
+            throws ParcelNotFoundException {
+        parcelService.updateParcel(httpRequestBody, id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

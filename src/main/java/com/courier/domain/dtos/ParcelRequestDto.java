@@ -1,5 +1,6 @@
 package com.courier.domain.dtos;
 
+import com.courier.domain.enums.ParcelStatus;
 import com.courier.domain.enums.Priority;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -30,6 +31,8 @@ public class ParcelRequestDto {
     private String origin;
 
     private Priority priority;
+
+    private ParcelStatus status;
 
     private CustomerResponseDto sender;
 
