@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -84,12 +85,12 @@ public class DeliveryDriverController {
                                           @PathVariable Long id, Principal principal, Authentication authentication)
             throws DeliveryDriverNotFoundException, CannotUpdateOtherUsersStatusException {
 
-        if (authentication.getAuthorities().contains("ROLE_ADMIN")) {
+        if (authentication.getAuthorities().stream()
+                .filter(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN")).findFirst().isPresent()) {
             deliveryDriverService.updateStatus(deliveryDriverStatusDto, id);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } if (!principal.getName().equals(deliveryDriverService.getDeliveryDriver(id).getCourierUser().getEmail())) {
-            throw new CannotUpdateOtherUsersStatusException("You can only update your driver's status.");
-        }
+            return new ResponseEntity(HttpStatus.NO_CONTENT);}
+        if (!principal.getName().equals(deliveryDriverService.getDeliveryDriver(id).getCourierUser().getEmail())) {
+            throw new CannotUpdateOtherUsersStatusException("You can only update your driver's status."); }
 
         deliveryDriverService.updateStatus(deliveryDriverStatusDto, id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

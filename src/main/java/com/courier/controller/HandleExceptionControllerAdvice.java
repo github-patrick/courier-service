@@ -107,5 +107,11 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
         return new ResponseEntity(errorApi, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ParcelNotFoundException.class)
+    public ResponseEntity<Object> handleParcelNotFoundException(ParcelNotFoundException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.NOT_FOUND.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity(errorApi, HttpStatus.NOT_FOUND);
+    }
 
 }

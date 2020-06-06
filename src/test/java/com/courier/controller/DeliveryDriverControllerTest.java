@@ -349,6 +349,29 @@ DeliveryDriverControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
+    public void updateDriverStatusAsAdmin() throws Exception {
+
+        CourierUserResponseDto courierUserResponseDto = UserUtils.getUserDriverResponseDto();
+        courierUserResponseDto.setEmail("user@courier.com");
+        DeliveryDriverResponseDto deliveryDriverResponseDto = DeliveryDriverUtils.getDeliveryDriverResponseDto(courierUserResponseDto);
+        DeliveryDriverStatusDto deliveryDriverStatus =
+                DeliveryDriverStatusDto.builder().deliveryDriverStatus(DeliveryDriverStatus.AVAILABLE).build();
+
+
+        when(deliveryDriverService.getDeliveryDriver(1L)).thenReturn(deliveryDriverResponseDto);
+
+
+        mockMvc.perform(patch("/api/v1/drivers/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsBytes(deliveryDriverStatus)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
     public void updateWithInvalidDriverStatus() throws Exception {
 
         CourierUserResponseDto courierUserResponseDto = UserUtils.getUserDriverResponseDto();
