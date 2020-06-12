@@ -1,5 +1,6 @@
 package com.courier.utils;
 
+import com.courier.domain.CourierUser;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
@@ -45,6 +46,12 @@ public class UserUtils {
         return CourierUserResponseDto.builder().id(1l).email(faker.internet().emailAddress())
                 .createdAt(new Date()).modifiedAt(new Date())
                 .password(TEST_DEFAULT_PASSWORD).types(Arrays.asList(UserType.DRIVER)).build();
+    }
+
+    public static CourierUser getCourierUser(UserType userType) {
+        return CourierUser.superBuilder().id(1l).email(faker.internet().emailAddress())
+                .createdAt(new Date()).modifiedAt(new Date())
+                .password(TEST_DEFAULT_PASSWORD).types(Arrays.asList(userType)).build();
     }
 
     public static CourierUserResponseDto createCourierUser(UserType userType) {

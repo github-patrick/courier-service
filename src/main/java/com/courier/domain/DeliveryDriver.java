@@ -31,6 +31,6 @@ public class DeliveryDriver extends BaseEntity {
     @JoinColumn(name = "COURIER_USER_ID")
     private CourierUser courierUser;
 
-    @OneToMany(mappedBy = "deliverer")
+    @OneToMany(mappedBy = "deliverer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Parcel> parcels = new HashSet<>();
 }

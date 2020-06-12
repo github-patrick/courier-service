@@ -6,14 +6,15 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 
-@Builder
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"sender","deliverer"})
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(builderClassName = "baseBuilder")
 @EqualsAndHashCode(of = {"id","cityDestination","priority"})
 @Entity
 public class Parcel extends BaseEntity {
@@ -37,7 +38,20 @@ public class Parcel extends BaseEntity {
     @JoinColumn(name = "CUSTOMER_ID")
     private Customer sender;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "DELIVERY_DRIVER_ID")
     private DeliveryDriver deliverer;
+
+    @Builder(builderMethodName = "superBuilder")
+    public Parcel(Date createdAt, Date modifiedAt, String id, String destination, String origin, Priority priority,
+                  ParcelStatus status, Customer sender, DeliveryDriver deliverer) {
+        super(createdAt, modifiedAt);
+        this.id = id;
+        this.destination = destination;
+        this.origin = origin;
+        this.priority = priority;
+        this.status = status;
+        this.sender = sender;
+        this.deliverer = deliverer;
+    }
 }

@@ -40,7 +40,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         log.info("Attempting to create a parcel for delivery");
         Parcel parcelSaved = parcelRepository.save(modelMapper.map(parcelRequestDto, Parcel.class));
-        log.info("Parcel of id: {}", parcelSaved.getId());
+        log.info("Parcel of id: {} has been created.", parcelSaved.getId());
         return modelMapper.map(parcelSaved,ParcelResponseDto.class);
     }
 

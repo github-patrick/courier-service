@@ -40,11 +40,11 @@ public class CourierUser extends BaseEntity {
     private List<UserType> types;
 
     @Builder(builderMethodName = "superBuilder")
-    public CourierUser(Date createdAt, Date modifiedAt, Long id, String email, String password, List<UserType> userType) {
+    public CourierUser(Date createdAt, Date modifiedAt, Long id, String email, String password, List<UserType> types) {
         super(createdAt,modifiedAt);
         this.id = id;
         this.email = email;
         this.password = password;
-        this.types = userType;
+        this.types = types;
     }
 }

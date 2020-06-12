@@ -76,7 +76,7 @@ class CourierUserServiceImplTest {
     public void getUserByEmail() throws CourierUserNotFoundException {
         final String email = "developer@courier.com";
 
-        CourierUser courierUser = CourierUser.superBuilder().id(34L).userType(Arrays.asList(UserType.CUSTOMER)).password("password")
+        CourierUser courierUser = CourierUser.superBuilder().id(34L).types(Arrays.asList(UserType.CUSTOMER)).password("password")
                 .createdAt(new Date()).modifiedAt(new Date()).email(email).build();
 
         given(courierUserRepository.findByEmail(email)).willReturn(Optional.of(courierUser));

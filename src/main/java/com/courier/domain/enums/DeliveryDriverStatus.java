@@ -1,5 +1,5 @@
 package com.courier.domain.enums;
 
 public enum DeliveryDriverStatus {
-    AVAILABLE, UNAVAILABLE, ON_DELIVERY
+    AVAILABLE, UNAVAILABLE, MAX_CAPACITY, ON_DELIVERY
 }

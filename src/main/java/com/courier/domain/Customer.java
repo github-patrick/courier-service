@@ -29,6 +29,6 @@ public class Customer extends BaseEntity {
     @NotNull
     private CourierUser courierUser;
 
-    @OneToMany(mappedBy = "sender")
+    @OneToMany(mappedBy = "sender", fetch = FetchType.EAGER)
     private Set<Parcel> parcels = new HashSet<>();
 }

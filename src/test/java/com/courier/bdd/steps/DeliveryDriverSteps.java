@@ -1,6 +1,7 @@
 package com.courier.bdd.steps;
 
 import com.courier.bdd.Context;
+import com.courier.domain.DeliveryDriver;
 import com.courier.domain.dtos.DeliveryDriverRequestDto;
 import com.courier.domain.dtos.DeliveryDriverResponseDto;
 import com.courier.domain.dtos.DeliveryDriverStatusDto;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -111,6 +113,11 @@ public class DeliveryDriverSteps {
         assertEquals(DeliveryDriverStatus.valueOf(type), deliveryDriverResponseDto.getDeliveryDriverStatus());
     }
 
+    @Then("the driver should have {int} parcels assigned")
+    public void the_driver_should_have_parcels_assigned(Integer number) {
+        Optional<DeliveryDriver> deliveryDriver = deliveryDriverRepository.findById(context.getDeliveryDriver().getId());
+        assertEquals(number, deliveryDriver.get().getParcels().size());
+    }
 
 
 }

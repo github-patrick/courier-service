@@ -1,8 +1,11 @@
 package com.courier.utils;
 
+import com.courier.domain.Customer;
+import com.courier.domain.Parcel;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.dtos.CustomerRequestDto;
 import com.courier.domain.dtos.CustomerResponseDto;
+import com.courier.domain.enums.UserType;
 import com.github.javafaker.Faker;
 import io.restassured.http.ContentType;
 
@@ -26,6 +29,11 @@ public class CustomerUtils {
         CourierUserResponseDto courierUserResponseDto = UserUtils.getUserCustomerResponseDto();
         return CustomerResponseDto.builder().id(1l).fullName(faker.name().fullName()).courierUser(courierUserResponseDto)
                 .createdAt(new Date()).modifiedAt(new Date()).build();
+    }
+
+    public static Customer getCustomer() {
+        return Customer.builder().fullName(faker.name().fullName()).id(1l).courierUser(UserUtils.getCourierUser(UserType.CUSTOMER))
+                .build();
     }
 
     public static CustomerResponseDto createCustomer(CourierUserResponseDto courierUserResponseDto) {

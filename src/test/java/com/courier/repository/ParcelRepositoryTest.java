@@ -1,8 +1,11 @@
 package com.courier.repository;
 
+import com.courier.domain.DeliveryDriver;
 import com.courier.domain.Parcel;
+import com.courier.domain.enums.DeliveryDriverStatus;
 import com.courier.domain.enums.ParcelStatus;
 import com.courier.domain.enums.Priority;
+import com.courier.utils.DeliveryDriverUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +56,13 @@ class ParcelRepositoryTest {
         parcelByPriority.forEach(parcel -> parcels.add(parcel));
         assertEquals(1, parcels.size());
     }
+
+    @Test
+    void assignParcelToDriver() {
+        List<Parcel> parcels = new ArrayList<>();
+        DeliveryDriver deliveryDriver = DeliveryDriverUtils.getDeliveryDriver(DeliveryDriverStatus.AVAILABLE);
+    }
+
 
 
     private void addParcels() {

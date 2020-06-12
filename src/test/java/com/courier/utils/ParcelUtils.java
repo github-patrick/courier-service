@@ -26,9 +26,12 @@ public class ParcelUtils {
         return ParcelRequestDto.builder().origin(faker.address().cityName()).destination(faker.address().cityName()).build();
     }
 
-    public static Parcel getParcel() {
-        return Parcel.builder().origin(faker.address().cityName()).destination(faker.address().cityName())
-                .priority(Priority.MEDIUM).status(ParcelStatus.NOT_DISPATCHED).build();
+    public static Parcel getParcel(Priority priority) {
+        return Parcel.superBuilder().createdAt(new Date()).modifiedAt(new Date()).origin(faker.address().cityName())
+                .destination(faker.address().cityName())
+                .priority(priority).status(ParcelStatus.NOT_DISPATCHED)
+                .sender(CustomerUtils.getCustomer())
+                .id(UUID.randomUUID().toString()).build();
     }
 
     public static ParcelResponseDto getParcelResponseDto(CustomerResponseDto customerResponseDto) {
