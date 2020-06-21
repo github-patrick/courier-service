@@ -33,7 +33,6 @@ public class DriverSelector implements DriverSelectable {
 
         Optional<DeliveryDriver> deliveryDriverOptional = driverList.stream().filter(this.driverPredicate()).findFirst();
         if (!deliveryDriverOptional.isPresent()) {
-            log.info("No available drivers at present.");
             return Optional.empty();
         }
         return deliveryDriverOptional;

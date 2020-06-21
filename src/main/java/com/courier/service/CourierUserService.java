@@ -17,4 +17,6 @@ public interface CourierUserService {
 
     CourierUserResponseDto getCourierUserByEmail(String email) throws CourierUserNotFoundException;
 
+    CourierUserResponseDto getCourierUserById(Long id) throws CourierUserNotFoundException;
+
 }

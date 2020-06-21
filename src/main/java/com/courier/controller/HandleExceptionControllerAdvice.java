@@ -114,4 +114,13 @@ public class HandleExceptionControllerAdvice extends ResponseEntityExceptionHand
         return new ResponseEntity(errorApi, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ForbiddenActionException.class)
+    public ResponseEntity<Object> handleForbiddenActionException(ForbiddenActionException ex, WebRequest request) {
+        ErrorApi errorApi = new ErrorApi(HttpStatus.FORBIDDEN.getReasonPhrase(),ex.getMessage(), null,
+                HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity(errorApi, HttpStatus.FORBIDDEN);
+    }
+
+
+
 }

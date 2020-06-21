@@ -16,9 +16,9 @@ public class ParcelSelector implements ParcelSelectable {
 
     private ParcelRepository parcelRepository;
 
-    private ArrayBlockingQueue<Parcel> highPriorityQueue = new ArrayBlockingQueue(100);
-    private ArrayBlockingQueue<Parcel> mediumPriorityQueue = new ArrayBlockingQueue(100);
-    private ArrayBlockingQueue<Parcel> lowPriorityQueue = new ArrayBlockingQueue(100);
+    private ArrayBlockingQueue<Parcel> highPriorityQueue = new ArrayBlockingQueue(30);
+    private ArrayBlockingQueue<Parcel> mediumPriorityQueue = new ArrayBlockingQueue(30);
+    private ArrayBlockingQueue<Parcel> lowPriorityQueue = new ArrayBlockingQueue(30);
 
     @Autowired
     public ParcelSelector(ParcelRepository parcelRepository) {
@@ -40,7 +40,6 @@ public class ParcelSelector implements ParcelSelectable {
             log.info("Parcel {} is waiting in queue to be assigned to a driver.", highPriorityQueue.element().getId());
             return Optional.of(highPriorityQueue.element());
         } else {
-            log.info("No high priority parcel to be sent.");
             return Optional.empty();
         }
     }
@@ -50,14 +49,17 @@ public class ParcelSelector implements ParcelSelectable {
         parcelRepository.findParcelByPriority(Priority.MEDIUM).forEach(
                 parcel -> {
                     if (parcel.getDeliverer() == null) {
-                        mediumPriorityQueue.add(parcel);
+                        if (!mediumPriorityQueue.contains(parcel)) {
+                            mediumPriorityQueue.add(parcel);
+                        }
                     }
                 }
         );
         if (mediumPriorityQueue.size() != 0) {
+            log.info("Parcel {} is waiting in queue to be assigned to a driver.", mediumPriorityQueue.element().getId());
+
             return Optional.of(mediumPriorityQueue.element());
         } else {
-            log.info("No medium priority parcel to be sent.");
             return Optional.empty();
         }
     }
@@ -67,14 +69,16 @@ public class ParcelSelector implements ParcelSelectable {
         parcelRepository.findParcelByPriority(Priority.LOW).forEach(
                 parcel -> {
                     if (parcel.getDeliverer() == null) {
-                        lowPriorityQueue.add(parcel);
+                        if (!lowPriorityQueue.contains(parcel)) {
+                            lowPriorityQueue.add(parcel);
+                        }
                     }
                 }
         );
         if (lowPriorityQueue.size() != 0) {
+            log.info("Parcel {} is waiting in queue to be assigned to a driver.", lowPriorityQueue.element().getId());
             return Optional.of(lowPriorityQueue.element());
         } else {
-            log.info("No low priority parcel to be sent.");
             return Optional.empty();
         }
     }

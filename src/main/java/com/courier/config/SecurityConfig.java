@@ -28,6 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/courier-users").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/v1/healthcheck").permitAll()
+                .antMatchers("/api/v1/courier-users/**")
+                .hasAnyRole("CUSTOMER","ADMIN","DRIVER")
                 .antMatchers("/api/v1/customers")
                     .hasAnyRole("CUSTOMER","ADMIN")
                 .antMatchers("/api/v1/drivers")

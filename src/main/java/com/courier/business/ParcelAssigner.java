@@ -21,8 +21,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 @Service
 public class ParcelAssigner implements ParcelAssignable {
 
-    private static int queueSize = 100;
-
     private ParcelSelectable parcelSelectable;
     private DriverSelectable driverSelectable;
     private ParcelRepository parcelRepository;
@@ -35,7 +33,7 @@ public class ParcelAssigner implements ParcelAssignable {
         this.deliveryDriverService = deliveryDriverService;
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 20000)
     @Override
     public void assignHighPriorityParcelsToDriver()  {
         Optional<Parcel> parcel = parcelSelectable.selectParcelHighPriority();
@@ -55,7 +53,7 @@ public class ParcelAssigner implements ParcelAssignable {
         }
     }
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 30000)
     @Override
     public void assignMediumPriorityParcelsToDriver() {
         Optional<Parcel> parcel = parcelSelectable.selectParcelMediumPriority();
@@ -76,7 +74,7 @@ public class ParcelAssigner implements ParcelAssignable {
 
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 40000)
     @Override
     public void assignLowPriorityParcelsToDriver() {
         Optional<Parcel> parcel = parcelSelectable.selectParcelLowPriority();

@@ -5,6 +5,7 @@ import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
 import com.courier.exception.ErrorApi;
 import com.courier.utils.UserUtils;
+import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -99,5 +101,24 @@ public class CourierUserTestIT extends BaseTest {
 
         ErrorApi errorApi = response.as(ErrorApi.class);
         assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), errorApi.getCode());
+    }
+
+    @Test
+    public void shouldRetrieveCourierUser() {
+        CourierUserResponseDto courierUserResponseDto = UserUtils.createCourierUser(UserType.CUSTOMER);
+
+        PreemptiveBasicAuthScheme auth = new PreemptiveBasicAuthScheme();
+        auth.setUserName(courierUserResponseDto.getEmail());
+        auth.setPassword(UserUtils.TEST_DEFAULT_PASSWORD);
+        requestSpecBuilder.setAccept(ContentType.JSON)
+                .setAuth(auth)
+                .addPathParam("id", courierUserResponseDto.getId());
+
+        given()
+                .spec(requestSpecBuilder.build())
+                .when()
+                .get("courier-users/{id}")
+                .then()
+                .statusCode(200);
     }
 }

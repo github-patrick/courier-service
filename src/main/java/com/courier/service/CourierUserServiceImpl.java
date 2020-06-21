@@ -69,6 +69,15 @@ public class CourierUserServiceImpl implements CourierUserService {
         return modelMapper.map(courierUser.get(), CourierUserResponseDto.class);
     }
 
+    @Override
+    public CourierUserResponseDto getCourierUserById(Long id) throws CourierUserNotFoundException {
+        CourierUser courierUser = courierUserRepository.findById(id).orElseThrow(() -> new CourierUserNotFoundException("Courier user account not found for id:" + id));
+
+        CourierUserResponseDto courierUserResponseDto =
+                modelMapper.map(courierUser, CourierUserResponseDto.class);
+        return courierUserResponseDto;
+    }
+
     private void checkIfUserHasRegistered(CourierUserRequestDto courierUserRequestDto) throws CannotRegisterUserException {
         log.info("Checking to see if the user has registered.");
         if (courierUserRepository.findByEmail(courierUserRequestDto.getEmail()).isPresent()) {
