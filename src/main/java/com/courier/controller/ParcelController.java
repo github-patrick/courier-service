@@ -84,6 +84,7 @@ public class ParcelController {
         return new ResponseEntity(parcelResponseDto, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:8000")
     @Secured("ROLE_ADMIN")
     @GetMapping("/api/v1/parcels")
     public ResponseEntity<List<ParcelResponseDto>> getAllParcels(@RequestParam(required = false) ParcelStatus parcelStatus,

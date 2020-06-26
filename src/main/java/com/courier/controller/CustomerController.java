@@ -33,6 +33,7 @@ public class CustomerController {
         this.courierUserService = courierUserService;
     }
 
+    @CrossOrigin(origins = "http://localhost:8000", allowCredentials = "true", exposedHeaders = "Set-Cookie")
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<CustomerResponseDto> createCustomer(@RequestBody @Valid CustomerRequestDto customerRequestDto,

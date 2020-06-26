@@ -180,7 +180,7 @@ public class CourierUserControllerTest {
 
     @DisplayName("Retrieves a created courier user resource")
     @Test
-    @WithMockUser(username = "random@courier.com")
+    @WithMockUser(username = "random@courier.com", roles="CUSTOMER")
     public void shouldGetCourierUser() throws Exception {
 
         when(courierUserService.getCourierUserById(1l)).thenReturn(UserUtils.getUserCustomerResponseDto());
@@ -195,7 +195,7 @@ public class CourierUserControllerTest {
 
     @DisplayName("Attempt to retrieve a non existent courier user resource")
     @Test
-    @WithMockUser
+    @WithMockUser(username = "random@courier.com", roles = "CUSTOMER")
     public void attemptToFindNonExistentUser() throws Exception {
 
         when(courierUserService.getCourierUserById(123l)).thenThrow(CourierUserNotFoundException.class);

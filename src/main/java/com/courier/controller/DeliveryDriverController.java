@@ -58,6 +58,7 @@ public class DeliveryDriverController {
         return new ResponseEntity(deliveryDriverResponseDto,HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:8000")
     @Secured("ROLE_ADMIN")
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<DeliveryDriverResponseDto>> retrieveAllDrivers(
