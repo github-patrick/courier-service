@@ -25,7 +25,7 @@ OR
 ### Example of a request to create a user ###
 
 
-``http://localhost:8444/api/v1/courier-users``
+``http://localhost:{port}/api/v1/courier-users``
 ```
 {
     "email": "bar.foo@example.com",
