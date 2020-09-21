@@ -1,22 +1,22 @@
 package com.courier.bdd.steps;
 
-import com.courier.CourierServiceApplication;
-import com.courier.domain.CourierUser;
+import com.courier.bdd.Context;
 import com.courier.domain.dtos.CourierUserRequestDto;
 import com.courier.domain.dtos.CourierUserResponseDto;
 import com.courier.domain.enums.UserType;
-import com.courier.repository.CourierUserRepository;
+import com.courier.exception.CourierUserNotFoundException;
 import com.courier.service.CourierUserServiceImpl;
+import com.courier.utils.UserUtils;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,19 +24,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SignUpSteps {
 
+    @Autowired
+    private Context context;
+
     private CourierUserRequestDto courierUser;
 
     @Autowired
     private CourierUserServiceImpl courierUserService;
 
     @Autowired
-    private CourierUserRepository courierUserRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @DataTableType
     public CourierUserRequestDto userEntry(Map<String,String> users) {
+
+        if (users.get("type") == null) {
+            return new CourierUserRequestDto(users.get("email"), users.get("password"),
+                    null);
+        }
         return new CourierUserRequestDto(users.get("email"), users.get("password"),
-                UserType.valueOf(users.get("type").toUpperCase()));
+                Arrays.asList(UserType.valueOf(users.get("type").toUpperCase())));
     }
 
 
@@ -45,11 +53,18 @@ public class SignUpSteps {
         courierUser = courierUsers.stream().findFirst().orElseThrow(Exception::new);
     }
 
-    @Given("a user is signed up with the email address of {string}")
-    public void a_user_is_signed_up_with_the_email_address_of(String email) {
+    @Given("I am a registered {string}")
+    public void i_am_a_registered(String type) throws Exception {
+        context.setCourierUser(courierUserService.addCourierUser(UserUtils.getUser(UserType.valueOf(type.toUpperCase()))));
+    }
+
+    @Given("I have a {string} user signed up with the email address of {string}")
+    public void i_have_a_user_signed_up_with_the_email_address_of(String type, String email) throws Exception {
         CourierUserRequestDto courierUserRequestDto = CourierUserRequestDto
-                .builder().email(email).password("password").userType(UserType.CUSTOMER).build();
-        courierUserService.addCourierUser(courierUserRequestDto);
+                .builder().email(email).password("password")
+                .types(Arrays.asList(UserType.valueOf(type.toUpperCase()))).build();
+
+        context.setCourierUser(courierUserService.addCourierUser(courierUserRequestDto));
     }
 
 
@@ -57,10 +72,8 @@ public class SignUpSteps {
     @When("I sign up")
     public void i_sign_up() {
         try {
-            courierUserService.addCourierUser(courierUser);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            context.setCourierUser(courierUserService.addCourierUser(courierUser));
+        } catch (Exception e) {}
     }
 
     @Then("I should be successfully registered as a customer")
@@ -81,8 +94,16 @@ public class SignUpSteps {
         long count = courierUserResponseDtoList.stream().filter(courierUser ->
                 courierUser.getEmail().equals(this.courierUser.getEmail())).count();
         assertSame(1L, count);
+    }
 
+    @Then("my password should be stored encrypted")
+    public void my_password_should_be_stored_encrypted() {
+    }
 
+    @Then("my {string} should be stored encrypted")
+    public void my_should_be_stored_encrypted(String password) throws CourierUserNotFoundException {
+        CourierUserResponseDto courierUserResponseDto = courierUserService.getCourierUserByEmail(courierUser.getEmail());
+        assertTrue(bCryptPasswordEncoder.matches(password, courierUserResponseDto.getPassword()));
     }
 
 

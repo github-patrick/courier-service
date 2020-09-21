@@ -24,19 +24,11 @@ Feature: As a user
       | email              | password | type     |
       |                    | password | Customer |
       | random@courier.com |          | Driver   |
+      | random@courier.com | password |          |
 
-  Scenario Outline: A user's password should be greater than 5 characters
-    Given I am a customer
-      | email              | password   | type   |
-      | random@courier.com | <password> | Driver |
-    When I sign up
-    Then I should not be successful in registration
-    Examples:
-      | password |
-      | pass     |
 
   Scenario Outline: A user's email address should be unique in the system
-    Given a user is signed up with the email address of "<email>"
+    Given I have a "customer" user signed up with the email address of "<email>"
     And I am a customer
       | email   | password | type   |
       | <email> | password | Driver |
@@ -46,4 +38,13 @@ Feature: As a user
       | email              |
       | random@courier.com |
 
-
+  Scenario Outline: A user's password should be stored encrypted
+    Given I am a customer
+      | email              | password   | type     |
+      | random@courier.com | <password> | Customer |
+    When I sign up
+    Then I should be successfully registered as a customer
+    And my "<password>" should be stored encrypted
+    Examples:
+      | password |
+      | password |

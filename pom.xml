@@ -18,6 +18,11 @@
 		<java.version>1.8</java.version>
 		<cucumber.version>5.5.0</cucumber.version>
 		<modelmapper.version>2.3.7</modelmapper.version>
+		<rest.assured.version>3.3.0</rest.assured.version>
+		<javafaker.version>1.0.2</javafaker.version>
+		<fasterxml.version>2.10.3</fasterxml.version>
+		<jacoco.version>0.8.5</jacoco.version>
+		<maven.failsafe.version>3.0.0-M4</maven.failsafe.version>
 	</properties>
 
 	<dependencies>
@@ -40,6 +45,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -103,6 +113,34 @@
 			<version>3.0.0-M4</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<version>${javafaker.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${rest.assured.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${jacoco.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${fasterxml.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.fabric8</groupId>
+			<artifactId>docker-maven-plugin</artifactId>
+			<version>0.33.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -111,18 +149,68 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>pre-unit-tests</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>generate-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-jar</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/docker</outputDirectory>
+							<resources>
+								<resource>
+									<directory>target</directory>
+									<includes>
+										<include>courier-service-0.0.1-SNAPSHOT.jar</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>integration-test</id>
+			<id>integration-tests</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>3.0.0-M4</version>
+						<version>${maven.failsafe.version}</version>
+						<configuration>
+							<excludes>
+								<exclude>**/*TestIT.java</exclude>
+							</excludes>
+						</configuration>
 						<executions>
 							<execution>
 								<id>integration-test</id>
@@ -134,9 +222,154 @@
 							</execution>
 						</executions>
 					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.22.2</version>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${jacoco.version}</version>
+						<executions>
+							<execution>
+								<id>pre-integration</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<destFile>${project.build.directory}/site/jacoco/integration/jacoco-it.exec</destFile>
+								</configuration>
+							</execution>
+							<execution>
+								<id>post-integration</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<configuration>
+									<dataFile>${project.build.directory}/site/jacoco/integration/jacoco-it.exec</dataFile>
+									<outputDirectory>${project.reporting.outputDirectory}/jacoco/jacoco-it</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>e2e-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>${maven.failsafe.version}</version>
+						<configuration>
+							<excludes>
+								<exclude>**/RunCukesIT.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.22.2</version>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.33.0</version>
+						<configuration>
+							<dockerHost>unix:///var/run/docker.sock</dockerHost>
+							<images>
+								<image>
+									<name>courier-image</name>
+									<alias>courier-alias</alias>
+									<build>
+										<dockerFile>${basedir}/docker/Dockerfile</dockerFile>
+									</build>
+									<run>
+										<containerNamePattern>%a</containerNamePattern>
+										<env>
+											<SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
+											<SPRING_DATASOURCE_URL>jdbc:mysql://db:3306/courier_db</SPRING_DATASOURCE_URL>
+										</env>
+										<wait>
+											<http>
+												<url>http://localhost:8444/api/v1/healthcheck</url>
+												<method>GET</method>
+												<status>200</status>
+											</http>
+											<time>1000000</time>
+										</wait>
+										<ports>
+											<port>8444:8444</port>
+										</ports>
+										<dependsOn>
+											<container>db</container>
+										</dependsOn>
+										<log>
+											<enabled>true</enabled>
+										</log>
+										<network>
+											<mode>custom</mode>
+											<name>test-network</name>
+											<alias>db</alias>
+										</network>
+									</run>
+								</image>
+								<image>
+									<name>mysql:latest</name>
+									<alias>db</alias>
+									<run>
+										<containerNamePattern>%a</containerNamePattern>
+										<env>
+											<MYSQL_DATABASE>courier_db</MYSQL_DATABASE>
+											<MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
+										</env>
+										<wait>
+											<time>90000</time>
+											<log>port: 3306</log>
+										</wait>
+										<log>
+											<enabled>true</enabled>
+										</log>
+										<network>
+											<mode>custom</mode>
+											<name>test-network</name>
+										</network>
+									</run>
+								</image>
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<id>start</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>build</goal>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
-
 </project>

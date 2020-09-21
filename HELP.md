@@ -1,6 +1,40 @@
 # Getting Started
 
-Courier Service Project
+**Courier Service Project**
+
+### To run the application execute the following command:
+
+``mvn clean install``
+
+``java -jar target/courier-service-0.0.1-SNAPSHOT.jar``
+
+OR
+
+``docker-compose up -d``
+
+### To run the cucumber service tests
+
+``mvn clean verify -Pintegration-tests``
+
+### To run the e2e tests ###
+
+``docker network create test-network``
+
+``mvn clean verify -Pe2e-tests``
+
+### Example of a request to create a user ###
+
+
+``http://localhost:{port}/api/v1/courier-users``
+```
+{
+    "email": "bar.foo@example.com",
+    "password": "password",
+    "types": [
+        "CUSTOMER"
+    ]
+}
+```
 
 ### Reference Documentation
 For further reference, please consider the following sections:
